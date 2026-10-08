@@ -133,6 +133,45 @@
     background: radial-gradient(circle at 82% 10%, #fff3c4 0 32px, #fff3c433 34px, transparent 90px), linear-gradient(180deg, #120a1c, #2a1238); background-attachment: fixed; }
   body[data-season=""][data-snow="1"] { --on-bg: #fff; --on-bg-muted: #dbe8f7;
     background: radial-gradient(circle at 20% 0%, #9cc0e6 0, transparent 50%), linear-gradient(180deg, #5f86b2, #2f4d73); background-attachment: fixed; }
+  /* Wetter-Themes (nur im normalen Design, Wetter in Kirchzell) */
+  body[data-wx="sun"] { --on-bg: #3a2a12; --on-bg-muted: #7a5a2a;
+    background: radial-gradient(circle at 88% 4%, #fff6c9 0 50px, #ffe58a55 60px, transparent 240px), linear-gradient(180deg, #8fd0ff 0%, #cfeaff 45%, #fff3dc 100%); background-attachment: fixed; }
+  body[data-wx="partly"] { --on-bg: #2c3a4a; --on-bg-muted: #5a6b7e;
+    background: radial-gradient(circle at 88% 4%, #fff6c9 0 40px, #ffe58a33 50px, transparent 200px), linear-gradient(180deg, #a8cfee, #dcecf8 50%, #fbf1ee); background-attachment: fixed; }
+  body[data-wx="cloud"] { --on-bg: #2f3a48; --on-bg-muted: #5d6b7d; background: linear-gradient(180deg, #9aa9bb, #c9d3de 50%, #e8ecf0); background-attachment: fixed; }
+  body[data-wx="fog"] { --on-bg: #3a3f46; --on-bg-muted: #66707c; background: linear-gradient(180deg, #c3c9d0, #dde1e5 50%, #eef0f2); background-attachment: fixed; }
+  body[data-wx="rain"] { --on-bg: #fff; --on-bg-muted: #d4dfeb; background: linear-gradient(180deg, #4d5f75, #6f8197 55%, #8d9cad); background-attachment: fixed; }
+  body[data-wx="storm"] { --on-bg: #fff; --on-bg-muted: #cfd3e6; background: linear-gradient(180deg, #1c2030, #343b52 55%, #4a5168); background-attachment: fixed; }
+  body[data-wx="night"] { --on-bg: #fff; --on-bg-muted: #c9cff0; background: radial-gradient(ellipse at 50% 120%, #3a4580 0, transparent 60%), linear-gradient(180deg, #070b26, #18214a 60%, #263064); background-attachment: fixed; }
+  body[data-night="1"][data-wx="sun"] { --on-bg: #fff; --on-bg-muted: #d3dcea; background: linear-gradient(180deg, #1f4f7a, #3c6f99 55%, #7a6a55); background-attachment: fixed; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) body[data-wx="sun"] { --on-bg: #fff; --on-bg-muted: #d3dcea; background: linear-gradient(180deg, #1f4f7a, #3c6f99 55%, #7a6a55); background-attachment: fixed; } }
+  :root[data-theme="dark"] body[data-wx="sun"] { --on-bg: #fff; --on-bg-muted: #d3dcea; background: linear-gradient(180deg, #1f4f7a, #3c6f99 55%, #7a6a55); background-attachment: fixed; }
+  body[data-night="1"][data-wx="partly"] { --on-bg: #fff; --on-bg-muted: #d3dcea; background: linear-gradient(180deg, #2b4a66, #4e6a85 55%, #6c7a88); background-attachment: fixed; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) body[data-wx="partly"] { --on-bg: #fff; --on-bg-muted: #d3dcea; background: linear-gradient(180deg, #2b4a66, #4e6a85 55%, #6c7a88); background-attachment: fixed; } }
+  :root[data-theme="dark"] body[data-wx="partly"] { --on-bg: #fff; --on-bg-muted: #d3dcea; background: linear-gradient(180deg, #2b4a66, #4e6a85 55%, #6c7a88); background-attachment: fixed; }
+  body[data-night="1"][data-wx="cloud"] { --on-bg: #fff; --on-bg-muted: #d3dcea; background: linear-gradient(180deg, #2a3240, #444e5c 55%, #5a6470); background-attachment: fixed; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) body[data-wx="cloud"] { --on-bg: #fff; --on-bg-muted: #d3dcea; background: linear-gradient(180deg, #2a3240, #444e5c 55%, #5a6470); background-attachment: fixed; } }
+  :root[data-theme="dark"] body[data-wx="cloud"] { --on-bg: #fff; --on-bg-muted: #d3dcea; background: linear-gradient(180deg, #2a3240, #444e5c 55%, #5a6470); background-attachment: fixed; }
+  body[data-night="1"][data-wx="fog"] { --on-bg: #fff; --on-bg-muted: #d3dcea; background: linear-gradient(180deg, #353a42, #4c525b 55%, #5e646c); background-attachment: fixed; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) body[data-wx="fog"] { --on-bg: #fff; --on-bg-muted: #d3dcea; background: linear-gradient(180deg, #353a42, #4c525b 55%, #5e646c); background-attachment: fixed; } }
+  :root[data-theme="dark"] body[data-wx="fog"] { --on-bg: #fff; --on-bg-muted: #d3dcea; background: linear-gradient(180deg, #353a42, #4c525b 55%, #5e646c); background-attachment: fixed; }
+  .cloud { position: absolute; left: 0; height: auto; }
+  .drift { animation: drift var(--t) linear var(--d) infinite; }
+  @keyframes drift { from { transform: translateX(-180px); } to { transform: translateX(calc(100vw + 20px)); } }
+  .sun { position: absolute; right: -34px; top: -34px; width: 180px; height: 180px; filter: drop-shadow(0 0 24px #ffd84d); }
+  .spin { transform-box: fill-box; transform-origin: center; animation: spin 80s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .moon { position: absolute; right: 22px; top: 18px; width: 74px; height: 74px; filter: drop-shadow(0 0 14px #fff3c4aa); }
+  .fogband { position: absolute; left: -50%; width: 200%; height: 140px; border-radius: 50%; filter: blur(10px);
+    background: radial-gradient(ellipse at center, rgba(255,255,255,.75), rgba(255,255,255,0) 70%); animation: fogdrift var(--t) ease-in-out var(--d) infinite alternate; }
+  @keyframes fogdrift { from { transform: translateX(-12%); } to { transform: translateX(12%); } }
+  .bunting { position: absolute; left: 0; top: 0; width: 100%; height: 64px; }
+  /* Geburtstag */
+  body[data-season="bday"] { --on-bg: #4a1d3a; --on-bg-muted: #8a4f73; --accent: #e0467c; --accent-soft: #ffe0ec;
+    background: radial-gradient(circle at 10% 20%, #ffd16666 0 6px, transparent 7px) 0 0 / 70px 70px, radial-gradient(circle at 60% 70%, #7cc4ff66 0 5px, transparent 6px) 0 0 / 90px 90px, radial-gradient(circle at 30% 80%, #ff8fb866 0 4px, transparent 5px) 0 0 / 110px 110px, linear-gradient(160deg, #ffe3ef, #fff1d0 50%, #dff1ff); background-attachment: fixed; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) body[data-season="bday"] { --on-bg: #fff; --on-bg-muted: #f3c9e0; --accent: #ff8fb8; --accent-soft: #4a2140; background: radial-gradient(circle at 10% 20%, #ffd16630 0 6px, transparent 7px) 0 0 / 70px 70px, radial-gradient(circle at 60% 70%, #7cc4ff30 0 5px, transparent 6px) 0 0 / 90px 90px, radial-gradient(circle at 30% 80%, #ff8fb830 0 4px, transparent 5px) 0 0 / 110px 110px, linear-gradient(160deg, #3a1840, #1d2350); background-attachment: fixed; } }
+  :root[data-theme="dark"] body[data-season="bday"] { --on-bg: #fff; --on-bg-muted: #f3c9e0; --accent: #ff8fb8; --accent-soft: #4a2140; background: radial-gradient(circle at 10% 20%, #ffd16630 0 6px, transparent 7px) 0 0 / 70px 70px, radial-gradient(circle at 60% 70%, #7cc4ff30 0 5px, transparent 6px) 0 0 / 90px 90px, radial-gradient(circle at 30% 80%, #ff8fb830 0 4px, transparent 5px) 0 0 / 110px 110px, linear-gradient(160deg, #3a1840, #1d2350); background-attachment: fixed; }
+  @media (prefers-reduced-motion: reduce) { .drift, .spin, .fogband { animation: none; } }
   body[data-snow="1"] .count, body[data-snow="1"] .tile { position: relative; }
   .frost { position: absolute; left: 12px; right: 12px; top: -11px; height: 0; pointer-events: none; z-index: 2; }
   .frost .cap { position: absolute; left: -4px; top: 0; filter: drop-shadow(0 2px 2px rgba(40,70,110,.18)); }
@@ -485,8 +524,14 @@
     "Mai": "2027-05-10T12:00:00+02:00", "August": "2027-08-10T12:00:00+02:00", "Geburtstag": "2027-09-12T10:00:00+02:00",
     "Monatstag": "2026-10-24T10:00:00+02:00", "Jahrestag": "2027-08-24T10:00:00+02:00", "Juni": "2027-06-10T12:00:00+02:00",
     "Halloween": "2026-10-31T20:00:00+01:00", "Nikolaus": "2026-12-06T09:00:00+01:00",
-    "Schnee": "2027-01-20T12:00:00+01:00", "Advent + Schnee": "2026-12-12T17:00:00+01:00"
+    "Schnee": "2027-01-20T12:00:00+01:00", "Advent + Schnee": "2026-12-12T17:00:00+01:00",
+    "Sonne": "2027-06-15T12:00:00+02:00", "Leicht bewölkt": "2027-06-15T12:00:00+02:00", "Bewölkt": "2027-06-15T12:00:00+02:00",
+    "Regen": "2027-06-15T12:00:00+02:00", "Gewitter": "2027-06-15T12:00:00+02:00", "Nebel": "2027-06-15T12:00:00+02:00",
+    "Sternennacht": "2027-06-15T23:00:00+02:00"
   };
+  // Wetter in Kirchzell für die Simulation: [Wettercode, Tag?]
+  const SIM_WX = { "Schnee": [73, 1], "Advent + Schnee": [73, 1], "Sonne": [0, 1], "Leicht bewölkt": [2, 1], "Bewölkt": [3, 1],
+    "Regen": [63, 1], "Gewitter": [95, 1], "Nebel": [45, 1], "Sternennacht": [0, 0] };
   let offset = 0, simName = "Heute";
   const now = () => new Date(Date.now() + offset);
   const ymd = d => `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
@@ -547,6 +592,7 @@
     if (n >= adventStart(y) && n < new Date(y, 11, 27)) return "xmas";
     if (m === 1 && d === 14) return "vday";
     if (m === 9 && d === 31) return "halloween";
+    if (m === 8 && d === 12) return "bday";
     const e = easter(y);
     if (n >= addDays(e, -52) && n < addDays(e, -46)) return "fasching";
     return "";
@@ -559,28 +605,41 @@
   // ---------- Wetter: Edinburgh (Schottland-Karte) und Kirchzell (Schnee-Theme), Open-Meteo ohne Schlüssel ----------
   const PLACES = [{ name: "Edinburgh", lat: 55.95, lon: -3.19 }, { name: "Kirchzell", lat: 49.62, lon: 9.18 }];
   const SNOW_CODES = [71, 73, 75, 77, 85, 86];
-  let weather = null, home_wx = null, forceSnow = null;
+  let weather = null, home_wx = null, forceWx = null;
   const WCODES = [[[0], "☀️", "Sonnig"], [[1, 2], "🌤️", "Leicht bewölkt"], [[3], "☁️", "Bewölkt"], [[45, 48], "🌫️", "Nebel"],
     [[51, 53, 55, 56, 57], "🌦️", "Nieselregen"], [[61, 63, 65, 66, 67, 80, 81, 82], "🌧️", "Regen"],
     [[71, 73, 75, 77, 85, 86], "🌨️", "Schnee"], [[95, 96, 99], "⛈️", "Gewitter"]];
   const describe = j => {
     const w = WCODES.find(([c]) => c.includes(j.current.weather_code)) || [[], "🌡️", "Wetter"];
-    return { code: j.current.weather_code, icon: w[1], text: w[2], t: Math.round(j.current.temperature_2m),
+    const day = j.current.is_day !== 0, clearNight = !day && j.current.weather_code <= 1;
+    return { code: j.current.weather_code, day, icon: clearNight ? "🌙" : w[1], text: clearNight ? "Klare Nacht" : w[2], t: Math.round(j.current.temperature_2m),
              min: Math.round(j.daily.temperature_2m_min[0]), max: Math.round(j.daily.temperature_2m_max[0]) };
   };
   async function loadWeather() {
     try {
       const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${PLACES.map(p => p.lat)}&longitude=${PLACES.map(p => p.lon)}` +
-        "&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1");
+        "&current=temperature_2m,weather_code,is_day&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1");
       const j = await r.json(), list = Array.isArray(j) ? j : [j];
       weather = describe(list[0]); home_wx = list[1] ? describe(list[1]) : null;
     } catch (e) { weather = { error: true }; home_wx = null; }
     applySeason(); paintWeather();
   }
-  const snowing = () => forceSnow !== null ? forceSnow : !!(home_wx && SNOW_CODES.includes(home_wx.code));
+  const homeCode = () => forceWx ? forceWx[0] : home_wx ? home_wx.code : null;
+  const isDay = () => forceWx ? !!forceWx[1] : home_wx ? home_wx.day : true;
+  const snowing = () => SNOW_CODES.includes(homeCode());
+  function wxMood() {   // Stimmung fürs normale Design aus dem Wetter in Kirchzell
+    const c = homeCode(); if (c === null || SNOW_CODES.includes(c)) return "";
+    if ([95, 96, 99].includes(c)) return "storm";
+    if ((c >= 51 && c <= 67) || (c >= 80 && c <= 82)) return "rain";
+    if (c === 45 || c === 48) return "fog";
+    if (!isDay()) return c === 3 ? "cloud" : "night";
+    return c === 0 ? "sun" : c === 3 ? "cloud" : "partly";
+  }
   function paintWeather() {
     const el = document.getElementById("weather"), hw = document.getElementById("wx-home");
-    if (hw) hw.innerHTML = forceSnow ? "🌨️ Schnee in Kirchzell (simuliert)" : home_wx ? `${home_wx.icon} ${home_wx.t}° ${home_wx.text} in Kirchzell` : "";
+    if (forceWx) { const w = describe({ current: { weather_code: forceWx[0], is_day: forceWx[1], temperature_2m: 0 }, daily: { temperature_2m_min: [0], temperature_2m_max: [0] } });
+      if (hw) hw.innerHTML = `${w.icon} ${w.text} in Kirchzell (simuliert)`; }
+    else if (hw) hw.innerHTML = home_wx ? `${home_wx.icon} ${home_wx.t}° ${home_wx.text} in Kirchzell` : "";
     if (!el) return;
     el.innerHTML = !weather ? `<span class="w-ico" aria-hidden="true">⏳</span><span>Wetter in Edinburgh wird geladen …</span>`
       : weather.error ? `<span class="w-ico" aria-hidden="true">🌥️</span><span>Wetter in Edinburgh gerade nicht verfügbar</span>`
@@ -630,8 +689,42 @@
   const streamer = (y, c, flip) => `<svg class="streamer" style="top:${y}%;${flip ? "right:-10px;transform:scaleX(-1)" : "left:-10px"}" viewBox="0 0 120 60">
       <path d="M0 10 C30 0 30 50 60 30 S90 0 120 40" stroke="${c}" stroke-width="5" fill="none" stroke-linecap="round"/></svg>`;
 
+  const cloud = (y, w, c, t, o = 1) => `<svg class="cloud drift" style="top:${y}%;width:${w}px;opacity:${o};--t:${t}s;--d:-${R(0, t).toFixed(1)}s" viewBox="0 0 120 60" aria-hidden="true">
+      <path d="M20 52a16 16 0 0 1 2-32a22 22 0 0 1 40-8a18 18 0 0 1 32 10a16 16 0 0 1 6 30z" fill="${c}"/></svg>`;
+  const clouds = (n, c, o, y0 = 0, y1 = 40) => Array.from({ length: n }, () => cloud(R(y0, y1).toFixed(1), R(90, 170) | 0, c, R(60, 140) | 0, o)).join("");
+  const sun = `<svg class="sun" viewBox="0 0 180 180" aria-hidden="true"><defs><radialGradient id="sg" cx=".4" cy=".4" r=".7"><stop offset="0" stop-color="#fff7c2"/><stop offset="1" stop-color="#ffc93c"/></radialGradient></defs>
+      <g class="spin">${Array.from({ length: 12 }, (_, i) => `<path d="M90 8 L96 34 L84 34Z" fill="#ffd84d" opacity=".85" transform="rotate(${i * 30} 90 90)"/>`).join("")}</g>
+      <circle cx="90" cy="90" r="40" fill="url(#sg)"/></svg>`;
+  const moon = `<svg class="moon" viewBox="0 0 80 80" aria-hidden="true"><defs><mask id="mm"><rect width="80" height="80" fill="#fff"/><circle cx="54" cy="28" r="26" fill="#000"/></mask></defs>
+      <circle cx="40" cy="40" r="30" fill="#fff6cf" mask="url(#mm)"/></svg>`;
+  function meadow() {
+    let p = `<path d="M0 110 Q90 80 200 104 T440 96 V140 H0Z" fill="#9fd486"/><path d="M0 124 Q120 104 250 122 T440 116 V140 H0Z" fill="#7cc06a"/>`;
+    for (let i = 0; i < 14; i++) { const x = R(5, 435), y = R(118, 136), c = ["#fff", "#ffd84d", "#ff8fb8"][i % 3];
+      p += `<g transform="translate(${x.toFixed(0)} ${y.toFixed(0)})">${[0, 72, 144, 216, 288].map(a => `<circle r="2.6" cx="0" cy="-3.2" fill="${c}" transform="rotate(${a})"/>`).join("")}<circle r="1.8" fill="#f2a900"/></g>`; }
+    return `<svg class="ground" viewBox="0 0 440 140" preserveAspectRatio="xMidYMax slice" aria-hidden="true">${p}</svg>`;
+  }
+  function bunting() {
+    const w = Math.max(320, innerWidth), n = Math.round(w / 30), C = ["#ff5c8a", "#ffd166", "#4dabf7", "#7dffb0", "#b388ff", "#ff9f43"];
+    const yAt = t => 6 + 4 * 22 * t * (1 - t);
+    let p = `<path d="M0 6 Q${w / 2} 50 ${w} 6" fill="none" stroke="#c98aa8" stroke-width="1.5"/>`;
+    for (let i = 0; i < n; i++) { const t0 = (i + .1) / n, t1 = (i + .9) / n, tm = (i + .5) / n;
+      p += `<path d="M${(t0 * w).toFixed(1)} ${yAt(t0).toFixed(1)} L${(t1 * w).toFixed(1)} ${yAt(t1).toFixed(1)} L${(tm * w).toFixed(1)} ${(yAt(tm) + 20).toFixed(1)}Z" fill="${C[i % 6]}"/>`; }
+    return `<svg class="bunting" viewBox="0 0 ${w} 64" aria-hidden="true">${p}</svg>`;
+  }
+  function gifts() {
+    const C = [["#ff5c8a", "#ffd166"], ["#4dabf7", "#ffffff"], ["#ffd166", "#e0467c"], ["#7c5cff", "#7dffb0"], ["#3bceac", "#ff5c8a"]];
+    let p = "", x = 6;
+    for (let i = 0; x < 420; i++) { const w = R(34, 54), h = R(28, 50), [c, r] = C[i % 5], y = 140 - h, m = x + w / 2;
+      p += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" fill="${c}"/><rect x="${m - 4}" y="${y}" width="8" height="${h}" fill="${r}"/>
+        <rect x="${x - 3}" y="${y - 8}" width="${w + 6}" height="10" rx="2" fill="${c}"/><rect x="${m - 4}" y="${y - 8}" width="8" height="10" fill="${r}"/>
+        <path d="M${m} ${y - 8} c-16 -18 -24 -2 0 0 c16 -18 24 -2 0 0" fill="none" stroke="${r}" stroke-width="3"/>`;
+      x += w + R(26, 70); }
+    return `<svg class="ground" viewBox="0 0 440 140" preserveAspectRatio="xMidYMax slice" aria-hidden="true">${p}</svg>`;
+  }
+
   function renderDecor() {
-    const s = document.body.dataset.season, snow = document.body.dataset.snow === "1";
+    const s = document.body.dataset.season, snow = document.body.dataset.snow === "1", wx = document.body.dataset.wx, night = document.body.dataset.night === "1";
+    const th = document.documentElement.dataset.theme, dim = night || th === "dark" || (th !== "light" && matchMedia("(prefers-color-scheme: dark)").matches);
     let h = `<svg width="0" height="0" style="position:absolute"><defs><radialGradient id="shine" cx=".35" cy=".3" r=".7">
       <stop offset="0" stop-color="#fff" stop-opacity=".7"/><stop offset=".35" stop-color="#fff" stop-opacity=".1"/><stop offset="1" stop-color="#000" stop-opacity=".25"/></radialGradient></defs></svg>`;
     if (s === "xmas") {
@@ -656,9 +749,28 @@
       h += web + at(88, 22, "👻", 34, "float") + at(4, 46, "👻", 28, "float") + at(92, 52, "🕸️", 26, "twinkle") + at(6, 70, "🍬", 24, "float");
       h += atB(4, 6, "🎃", 40, "glow") + atB(20, 2, "🎃", 30, "glow") + atB(78, 4, "🎃", 34, "glow") + atB(92, 2, "🎃", 44, "glow");
       h += graves();
+    } else if (s === "bday") {
+      h += bunting() + at(3, 20, "🎂", 32, "float") + at(91, 16, "🥳", 30, "float") + at(5, 44, "🎁", 28, "float") + at(92, 46, "🧁", 28, "float")
+        + at(4, 66, "🎉", 28, "float") + at(91, 70, "🎈", 32, "float") + at(48, 8, "✨", 18, "twinkle");
+      h += gifts();
     } else if (snow) {
       h += at(4, 30, "❄️", 24, "twinkle") + at(92, 26, "❄️", 20, "twinkle") + at(5, 60, "🧣", 26, "float") + at(91, 64, "⛄", 32, "float");
       h += trees(true, "#24425f");
+    } else if (wx === "sun") {
+      h += sun + clouds(2, dim ? "#c9d6e6" : "#fff", dim ? .35 : .9, 14, 34) + at(4, 40, "🦋", 22, "float") + at(91, 60, "🐝", 20, "float") + meadow();
+    } else if (wx === "partly") {
+      h += sun + clouds(5, dim ? "#b9c6d6" : "#fff", dim ? .35 : .95, 2, 40) + at(4, 56, "🦋", 20, "float") + meadow();
+    } else if (wx === "cloud") {
+      h += clouds(8, dim ? "#7d8899" : "#f4f6f9", dim ? .4 : .9, -4, 60);
+    } else if (wx === "fog") {
+      h += [10, 30, 52, 74, 90].map(y => `<div class="fogband" style="top:${y}%;--t:${R(14, 26).toFixed(0)}s;--d:-${R(0, 20).toFixed(1)}s"></div>`).join("");
+      h += clouds(3, "#fff", dim ? .2 : .5, 0, 30);
+    } else if (wx === "rain" || wx === "storm") {
+      const c = wx === "storm" ? "#3a4057" : "#55657a";
+      h += clouds(7, c, .95, -6, 10) + clouds(4, wx === "storm" ? "#4b5370" : "#6a7a90", .8, 6, 22) + at(4, 52, "☂️", 26, "float") + at(91, 66, "💧", 20, "float");
+    } else if (wx === "night") {
+      for (let i = 0; i < 46; i++) h += at(R(0, 100).toFixed(1), R(0, 80).toFixed(1), "·", R(14, 28) | 0, "twinkle star");
+      h += moon + clouds(2, "#2f3a6a", .7, 10, 40) + at(4, 60, "✨", 18, "twinkle");
     }
     decorEl.innerHTML = h;
   }
@@ -694,7 +806,7 @@
   }
   let decoKey = "";
   function refreshDecor() {
-    const k = document.body.dataset.season + "|" + document.body.dataset.snow;
+    const b = document.body.dataset, k = [b.season, b.snow, b.wx, b.night].join("|");
     if (k !== decoKey) { decoKey = k; renderDecor(); }
     decorateSnow();
   }
@@ -704,7 +816,7 @@
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const back = document.getElementById("fx-back"), front = document.getElementById("fx-front");
   const bctx = back.getContext("2d"), fctx = front.getContext("2d");
-  let W = 0, H = 0, flakes = [], rockets = [], sparks = [], confetti = [], bits = [], floaters = [], bats = [];
+  let W = 0, H = 0, flakes = [], rockets = [], sparks = [], confetti = [], bits = [], floaters = [], bats = [], drops = [], balloons = [], flash = 0, bolt = null;
   function resize() {
     const r = devicePixelRatio || 1; W = innerWidth; H = innerHeight;
     [back, front].forEach(c => { c.width = W * r; c.height = H * r; c.getContext("2d").setTransform(r, 0, 0, r, 0, 0); });
@@ -743,7 +855,46 @@
       });
       bctx.globalAlpha = 1;
     }
-    if (mode === "fasching") {
+    const wxNow = document.body.dataset.wx;
+    if (wxNow === "rain" || wxNow === "storm") {
+      const want = wxNow === "storm" ? 280 : 170, slant = wxNow === "storm" ? 2.2 : 1.1;
+      if (drops.length > want) drops.length = want;
+      while (drops.length < want) { const z = Math.random() * .8 + .2; drops.push({ x: rnd(0, W), y: rnd(-H, H), z, l: 8 + z * 16, v: 6 + z * 9 }); }
+      bctx.lineCap = "round";
+      drops.forEach(d => {
+        if (!reduce) { d.y += d.v; d.x += slant * d.z; if (d.y > H + 20) { d.y = rnd(-60, -10); d.x = rnd(-40, W); } }
+        bctx.strokeStyle = `rgba(215,228,245,${(.18 + d.z * .45).toFixed(2)})`; bctx.lineWidth = .6 + d.z;
+        bctx.beginPath(); bctx.moveTo(d.x, d.y); bctx.lineTo(d.x + slant * d.l * .12, d.y + d.l); bctx.stroke();
+      });
+      if (wxNow === "storm" && !reduce) {
+        if (flash <= 0 && Math.random() < .004) {
+          flash = 1; let x = rnd(W * .15, W * .85), y = 0; bolt = [[x, y]];
+          while (y < H * rnd(.35, .6)) { x += rnd(-28, 28); y += rnd(18, 40); bolt.push([x, y]); }
+        }
+        if (flash > 0) {
+          bctx.fillStyle = `rgba(230,236,255,${(flash * .28).toFixed(2)})`; bctx.fillRect(0, 0, W, H);
+          if (flash > .55 && bolt) { bctx.strokeStyle = "rgba(255,255,240,.95)"; bctx.lineWidth = 2.4; bctx.shadowColor = "#dfe6ff"; bctx.shadowBlur = 18;
+            bctx.beginPath(); bolt.forEach(([x, y], i) => i ? bctx.lineTo(x, y) : bctx.moveTo(x, y)); bctx.stroke(); bctx.shadowBlur = 0; }
+          flash -= .035;
+        }
+      }
+    }
+    if (mode === "bday") {
+      const BC = ["#ff5c8a", "#ffd166", "#4dabf7", "#7c5cff", "#3bceac", "#ff9f43"];
+      while (balloons.length < 11) balloons.push({ x: rnd(0, W), y: rnd(H * .3, H * 1.5), v: rnd(.35, .9), r: rnd(14, 24), w: rnd(0, 6), c: BC[balloons.length % 6] });
+      bctx.globalAlpha = .85;
+      balloons.forEach(b => {
+        if (!reduce) { b.y -= b.v; b.w += .015; if (b.y < -b.r * 4) { b.y = H + b.r * 2; b.x = rnd(0, W); } }
+        const x = b.x + Math.sin(b.w) * 10, y = b.y;
+        bctx.strokeStyle = "rgba(120,90,110,.6)"; bctx.lineWidth = 1;
+        bctx.beginPath(); bctx.moveTo(x, y + b.r); bctx.quadraticCurveTo(x - 8, y + b.r * 2, x + 2, y + b.r * 3.2); bctx.stroke();
+        bctx.fillStyle = b.c; bctx.beginPath(); bctx.ellipse(x, y, b.r * .82, b.r, 0, 0, 7); bctx.fill();
+        bctx.beginPath(); bctx.moveTo(x - 3, y + b.r + 4); bctx.lineTo(x + 3, y + b.r + 4); bctx.lineTo(x, y + b.r - 1); bctx.fill();
+        bctx.fillStyle = "rgba(255,255,255,.4)"; bctx.beginPath(); bctx.ellipse(x - b.r * .3, y - b.r * .35, b.r * .18, b.r * .3, -.5, 0, 7); bctx.fill();
+      });
+      bctx.globalAlpha = 1;
+    }
+    if (mode === "fasching" || mode === "bday") {
       while (bits.length < 60) bits.push({ x: rnd(0, W), y: rnd(-H, H), v: rnd(.5, 1.4), r: rnd(0, 6), vr: rnd(-.05, .05), c: FW_COLORS[Math.floor(rnd(0, 6))] });
       bits.forEach(b => {
         if (!reduce) { b.y += b.v; b.r += b.vr; if (b.y > H + 8) { b.y = -8; b.x = rnd(0, W); } }
@@ -822,7 +973,11 @@
     if (p.fx) burst(p.fx === "hearts");
   }
 
-  function applySeason() { document.body.dataset.season = season(); document.body.dataset.snow = snowing() ? "1" : ""; refreshDecor(); }
+  function applySeason() {
+    const b = document.body.dataset, s = season(), snow = snowing();
+    b.season = s; b.snow = snow ? "1" : ""; b.wx = s === "" && !snow ? wxMood() : ""; b.night = isDay() ? "" : "1";
+    refreshDecor();
+  }
 
   // Wechselnde Sprüche unter „Hallo Amelie“
   const GREETINGS = [
@@ -871,6 +1026,7 @@
       : s === "halloween" ? `<span class="e">🎃</span><span>Happy Halloween</span><span class="e">👻</span>`
       : s === "fasching" ? `<span class="e">🎭</span><span>Helau!</span><span class="e">🎉</span>`
       : s === "vday" ? `<span class="e">💘</span><span>Happy Valentinstag</span><span class="e">💘</span>`
+      : s === "bday" ? `<span class="e">🎂</span><span>Happy Birthday</span><span class="e">🎈</span>`
       : s === "nye" ? `<span class="e">🎆</span><span>${n.getMonth() === 0 ? "Frohes neues Jahr" : "Guten Rutsch"}</span><span class="e">🥂</span>` : "";
     home.innerHTML = `
       ${s === "xmas" ? `<svg class="garland" viewBox="0 0 320 34" preserveAspectRatio="none" aria-hidden="true">
@@ -1052,7 +1208,7 @@
       `<button type="button" class="chip${k === simName ? " picked" : ""}" data-k="${k}">${k}</button>`).join("")}</div>`;
     bar.onclick = e => {
       const k = e.target.dataset && e.target.dataset.k; if (!k) return;
-      popupChecked = true; forceSnow = /Schnee/.test(k) ? true : null; simName = k; offset = SIMULATE[k] ? new Date(SIMULATE[k]) - Date.now() : 0;
+      popupChecked = true; forceWx = SIM_WX[k] || null; simName = k; offset = SIMULATE[k] ? new Date(SIMULATE[k]) - Date.now() : 0;
       bar.querySelectorAll(".chip").forEach(c => c.classList.toggle("picked", c.dataset.k === k));
       applySeason(); greeting = pickGreeting(); show("home"); checkPopup();
     };
