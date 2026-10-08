@@ -102,34 +102,34 @@
     pizza: ["Pizza", "🍕"], pasta: ["Pasta", "🍝"], sushi: ["Sushi", "🍣"], burger: ["Veggie-Burger", "🍔"],
     wok: ["Wok-Nudeln", "🥡"], griech: ["Griechisch", "🫒"], mex: ["Mexikanisch", "🌮"],
     fisch: ["Fisch (z. B. Lachs)", "🐟"], bowl: ["Bowl oder Salat", "🥗"], flamm: ["Flammkuchen", "🫓"],
-    spaetzle: ["Käsespätzle", "🥘"]
+    spaetzle: ["Käsespätzle", "🥘"], doener: ["Veggie-Döner", "🥙"]
   };
 
   // Antworten: [Text, Bild, Punkte für Gerichte]. multi: mehrere Antworten möglich.
   // kind "dessert": zählt nicht für die Gerichte, mit optionalem eigenen Wunsch. kind "text": nur Freitext.
   const QUESTIONS = [
     { q: "Worauf hast du gerade am meisten Lust?", a: [
-      ["Etwas Deftiges", "🥨", { burger: 2, pizza: 1, flamm: 1, mex: 1, spaetzle: 2 }],
+      ["Etwas Deftiges", "🥨", { burger: 2, pizza: 1, flamm: 1, mex: 1, spaetzle: 2, doener: 2 }],
       ["Etwas Leichtes und Frisches", "🥒", { sushi: 2, bowl: 2, griech: 1, fisch: 1 }],
       ["Etwas Gemütliches", "🛋️", { pasta: 2, pizza: 2, flamm: 1, spaetzle: 1 }],
       ["Etwas Exotisches", "🌴", { sushi: 1, wok: 2, mex: 2 }] ] },
     { q: "Was soll die Hauptrolle spielen?", a: [
       ["Fisch", "🐟", { fisch: 3, sushi: 2 }],
       ["Käse", "🧀", { pizza: 2, pasta: 1, griech: 2, flamm: 2, spaetzle: 2 }],
-      ["Gemüse", "🥦", { bowl: 2, wok: 1, griech: 1, mex: 1 }],
-      ["Tofu oder Falafel", "🧆", { bowl: 1, wok: 2, griech: 1, burger: 1 }],
+      ["Gemüse", "🥦", { bowl: 2, wok: 1, griech: 1, mex: 1, doener: 1 }],
+      ["Tofu oder Falafel", "🧆", { doener: 3, bowl: 1, wok: 2, griech: 1, burger: 1 }],
       ["Ist mir egal", "🤷‍♀️", {}] ] },
     { q: "Welche Beilage gewinnt?", a: [
       ["Pommes", "🍟", { burger: 2, fisch: 1 }],
       ["Reis", "🍚", { sushi: 2, wok: 1, mex: 1, fisch: 1 }],
-      ["Brot", "🥖", { griech: 2, flamm: 1, pizza: 1 }],
+      ["Brot", "🥖", { doener: 2, griech: 2, flamm: 1, pizza: 1 }],
       ["Nudeln", "🍜", { pasta: 3, wok: 2, spaetzle: 1 }] ] },
     { q: "Wie groß ist dein Hunger?", a: [
       ["Nur ein kleiner Hunger", "🤏", { sushi: 1, bowl: 2, flamm: 1 }],
       ["Normaler Hunger", "🙂", { pasta: 1, wok: 1, griech: 1, fisch: 1 }],
-      ["Riesenhunger", "🤤", { burger: 2, pizza: 2, mex: 1, spaetzle: 1 }] ] },
+      ["Riesenhunger", "🤤", { burger: 2, pizza: 2, mex: 1, spaetzle: 1, doener: 2 }] ] },
     { q: "In welchem Land würdest du heute gern essen?", a: [
-      ["Deutschland", FLAGS.de, { spaetzle: 3, flamm: 1 }],
+      ["Deutschland", FLAGS.de, { spaetzle: 3, doener: 2, flamm: 1 }],
       ["Italien", FLAGS.it, { pizza: 2, pasta: 2 }],
       ["Frankreich", FLAGS.fr, { flamm: 2, fisch: 1 }],
       ["Griechenland", FLAGS.gr, { griech: 3 }],
