@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fragen für Amelie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Nunito+Sans:wght@400;600;700&display=swap">
+<style>
+  /* Layout: eine Karte in der Mitte, eine Frage pro Schritt, Fortschritt als Herzreihe */
+  :root {
+    --bg: #fbf1ee; --card: #fffaf8; --fg: #3a1f24; --muted: #8a6a6f;
+    --accent: #b8325a; --accent-soft: #f6d9e0; --line: #ecd6d6;
+    --display: "Young Serif", Georgia, serif;
+    --body: "Nunito Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg: #1d1216; --card: #2a1a20; --fg: #f6e8eb; --muted: #c4a3ab;
+    --accent: #ff7aa0; --accent-soft: #4a2531; --line: #3d2830; color-scheme: dark } }
+  :root[data-theme="dark"] {
+    --bg: #1d1216; --card: #2a1a20; --fg: #f6e8eb; --muted: #c4a3ab;
+    --accent: #ff7aa0; --accent-soft: #4a2531; --line: #3d2830; color-scheme: dark }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--body);
+    display: grid; place-items: center; padding: 24px 16px; font-size: 16px; }
+  main { width: 100%; max-width: 32rem; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 22px;
+    padding: 32px 24px; box-shadow: 0 12px 40px -24px rgba(120,30,60,.35); }
+  .hearts { display: flex; gap: 6px; justify-content: center; margin-bottom: 20px; }
+  .hearts span { font-size: 15px; color: var(--line); transition: color .3s, transform .3s; }
+  .hearts span.on { color: var(--accent); transform: scale(1.15); }
+  .eyebrow { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+    text-align: center; margin: 0 0 8px; font-weight: 700; }
+  h1, h2 { font-family: var(--display); font-weight: 400; text-align: center; text-wrap: balance; margin: 0 0 24px; }
+  h1 { font-size: clamp(1.9rem, 7vw, 2.5rem); line-height: 1.15; }
+  h2 { font-size: clamp(1.4rem, 5vw, 1.75rem); line-height: 1.25; }
+  p.lead { text-align: center; color: var(--muted); line-height: 1.6; margin: -8px 0 28px; }
+  .options { display: grid; gap: 10px; }
+  .opt { font: inherit; text-align: left; padding: 14px 18px; border-radius: 14px; cursor: pointer;
+    border: 1.5px solid var(--line); background: transparent; color: var(--fg);
+    transition: border-color .2s, background .2s, transform .15s; }
+  .opt:hover { border-color: var(--accent); }
+  .opt:active { transform: scale(.98); }
+  .opt.picked { background: var(--accent-soft); border-color: var(--accent); font-weight: 700; }
+  .opt:focus-visible, .btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .row { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 24px; }
+  .btn { font: inherit; font-weight: 700; border: 0; border-radius: 999px; padding: 12px 24px; cursor: pointer;
+    background: var(--accent); color: var(--card); }
+  .btn:disabled { opacity: .4; cursor: default; }
+  .link { font: inherit; background: none; border: 0; color: var(--muted); cursor: pointer; padding: 8px 0; }
+  .center { display: flex; justify-content: center; margin-top: 8px; }
+  .big { font-size: 48px; text-align: center; margin-bottom: 12px; color: var(--accent); }
+  .note { font-size: 13px; color: var(--muted); text-align: center; margin-top: 16px; line-height: 1.5; }
+  .fade { animation: fade .35s ease both; }
+  @keyframes fade { from { opacity: .2; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .fade { animation: none; } .opt, .hearts span { transition: none; } }
+</style>
+</head>
+<body>
+
+<main>
+  <div class="card" id="card"></div>
+</main>
+
+<script>
+  // Mail-Versand über Web3Forms. Den Schlüssel bekommst du kostenlos auf web3forms.com.
+  const ACCESS_KEY = "90dcfece-f54e-4203-861b-e7a430412afc";
+
+  const QUESTIONS = [
+    { q: "Wie sieht unser perfekter Abend aus?", a: ["Zusammen kochen", "Schick essen gehen", "Couch, Decke, Film", "Spaziergang im Dunkeln"] },
+    { q: "Wohin soll unsere nächste Reise gehen?", a: ["Strand und Meer", "Berge", "Eine fremde Stadt", "Überrasch mich"] },
+    { q: "Wer kocht eigentlich besser?", a: ["Ich", "Du", "Beide gleich gut", "Wir bestellen lieber"] },
+    { q: "Was war dein liebster Moment mit mir?", a: ["Unser erstes Date", "Ein gemeinsamer Urlaub", "Ein ganz normaler Abend", "Der kommt noch"] },
+    { q: "Wie würdest du uns in einem Wort beschreiben?", a: ["Chaotisch", "Gemütlich", "Abenteuerlustig", "Perfekt"] }
+  ];
+
+  const card = document.getElementById("card");
+  const answers = [];
+  let step = -1;
+
+  function hearts() {
+    return '<div class="hearts" aria-hidden="true">' +
+      QUESTIONS.map((_, i) => `<span class="${i <= step ? "on" : ""}">♥</span>`).join("") + "</div>";
+  }
+
+  function render() {
+    card.classList.remove("fade"); void card.offsetWidth; card.classList.add("fade");
+    if (step === -1) {
+      card.innerHTML = `
+        <div class="big" aria-hidden="true">♥</div>
+        <h1>Hallo Amelie</h1>
+        <p class="lead">Ich habe ${QUESTIONS.length} kleine Fragen an dich. Tipp einfach an, was am besten passt.</p>
+        <div class="center"><button class="btn" id="start">Los geht's</button></div>`;
+      document.getElementById("start").onclick = () => { step = 0; render(); };
+      return;
+    }
+    if (step < QUESTIONS.length) {
+      const item = QUESTIONS[step];
+      card.innerHTML = hearts() + `
+        <p class="eyebrow">Frage ${step + 1} von ${QUESTIONS.length}</p>
+        <h2>${item.q}</h2>
+        <div class="options">${item.a.map((t, i) =>
+          `<button class="opt${answers[step] === t ? " picked" : ""}" data-i="${i}" id="opt-${step}-${i}">${t}</button>`).join("")}</div>
+        <div class="row">
+          <button class="link" id="back">${step > 0 ? "← Zurück" : ""}</button>
+          <button class="btn" id="next" ${answers[step] ? "" : "disabled"}>${step === QUESTIONS.length - 1 ? "Abschicken" : "Weiter"}</button>
+        </div>`;
+      card.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+        answers[step] = item.a[b.dataset.i];
+        card.querySelectorAll(".opt").forEach(o => o.classList.toggle("picked", o === b));
+        document.getElementById("next").disabled = false;
+      });
+      document.getElementById("back").onclick = () => { if (step > 0) { step--; render(); } };
+      document.getElementById("next").onclick = () => { step === QUESTIONS.length - 1 ? send() : (step++, render()); };
+      return;
+    }
+  }
+
+  async function send() {
+    card.innerHTML = `<div class="big" aria-hidden="true">♥</div><h2>Wird verschickt …</h2>`;
+    const text = QUESTIONS.map((x, i) => `${x.q}\n→ ${answers[i]}`).join("\n\n");
+    let ok = false, demo = ACCESS_KEY === "DEIN_ACCESS_KEY";
+    if (!demo) {
+      try {
+        const r = await fetch("https://api.web3forms.com/submit", {
+          method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({ access_key: ACCESS_KEY, subject: "Amelies Antworten", from_name: "amelie.meixner.club", message: text })
+        });
+        ok = (await r.json()).success;
+      } catch (e) { ok = false; }
+    }
+    if (ok || demo) {
+      card.innerHTML = `<div class="big" aria-hidden="true">♥</div><h1>Danke, Amelie!</h1>
+        <p class="lead">Deine Antworten sind unterwegs zu Jan.</p>` +
+        (demo ? `<p class="note">Vorschau: Hier wird noch nichts verschickt.</p>` : "");
+    } else {
+      card.innerHTML = `<h2>Das hat nicht geklappt</h2>
+        <p class="lead">Die Antworten konnten nicht verschickt werden. Prüf kurz deine Internetverbindung und versuch es nochmal.</p>
+        <div class="center"><button class="btn" id="retry">Nochmal senden</button></div>`;
+      document.getElementById("retry").onclick = send;
+    }
+  }
+
+  render();
+</script>
+</body>
+</html>
