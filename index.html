@@ -164,8 +164,10 @@
 
   async function send() {
     card.innerHTML = `<div class="big" aria-hidden="true">♥</div><h2>Wird verschickt …</h2>`;
-    const top = ranking().slice(0, 3);
-    const text = "Amelies Top 3:\n" + top.map((d, i) => `${i + 1}. ${d.name} (${d.score} Punkte)`).join("\n") +
+    // Top 3 plus alle, die punktgleich mit Platz 3 sind. Gleiche Punkte = gleicher Platz.
+    const all = ranking(), cut = all.length > 3 ? all[2].score : -Infinity;
+    const top = all.filter(d => d.score >= cut).map(d => ({ ...d, place: all.findIndex(x => x.score === d.score) + 1 }));
+    const text = "Amelies Favoriten:\n" + top.map(d => `${d.place}. ${d.name} (${d.score} Punkte)`).join("\n") +
       "\n\nIhre Antworten:\n\n" + QUESTIONS.map((x, i) =>
         `${x.q}\n→ ${answers[i].map(j => x.a[j][0]).join(", ") || "nichts ausgewählt"}`).join("\n\n");
     let ok = false, demo = ACCESS_KEY === "DEIN_ACCESS_KEY";
@@ -173,7 +175,7 @@
       try {
         const r = await fetch("https://api.web3forms.com/submit", {
           method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify({ access_key: ACCESS_KEY, subject: "Amelies Top 3: " + top.map(d => d.name).join(", "),
+          body: JSON.stringify({ access_key: ACCESS_KEY, subject: "Amelies Favoriten: " + top.map(d => d.name).join(", "),
             from_name: "amelie.meixner.club", message: text })
         });
         ok = (await r.json()).success;
@@ -182,7 +184,7 @@
     if (ok || demo) {
       card.innerHTML = `<div class="big" aria-hidden="true">♥</div><h1>Danke, Amelie!</h1>
         <p class="lead">Jan weiß jetzt, worauf du Hunger hast. Lass dich überraschen.</p>` +
-        (demo ? `<p class="note">Vorschau, hier wird nichts verschickt. In der Mail an Jan stünde:<br><strong>${top.map((d, i) => `${i + 1}. ${d.name}`).join(" · ")}</strong></p>` : "");
+        (demo ? `<p class="note">Vorschau, hier wird nichts verschickt. In der Mail an Jan stünde:<br><strong>${top.map(d => `${d.place}. ${d.name}`).join(" · ")}</strong></p>` : "");
     } else {
       card.innerHTML = `<h2>Das hat nicht geklappt</h2>
         <p class="lead">Die Antworten konnten nicht verschickt werden. Prüf kurz deine Internetverbindung und versuch es nochmal.</p>
