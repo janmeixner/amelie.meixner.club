@@ -42,6 +42,7 @@
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-width: 0;
     transition: border-color .2s, background .2s, transform .15s; }
   .pic { font-size: 34px; line-height: 1; transition: transform .2s; }
+  .flag { width: 46px; height: 31px; display: block; border-radius: 4px; box-shadow: 0 0 0 1px var(--line); }
   .opt.picked .pic { transform: scale(1.12); }
   .field { display: grid; gap: 8px; margin-top: 18px; color: var(--muted); font-size: 14px; }
   .field textarea { font: inherit; font-size: 16px; color: var(--fg); background: transparent; resize: vertical;
@@ -74,24 +75,47 @@
   // Mail-Versand über Web3Forms. Den Schlüssel bekommst du kostenlos auf web3forms.com.
   const ACCESS_KEY = "90dcfece-f54e-4203-861b-e7a430412afc";
 
+  // Flaggen als eingebaute Bilder, weil Flaggen-Emojis z. B. unter Windows nur als Buchstaben erscheinen.
+  const star = (cx, cy, r, rot = 0) => Array.from({ length: 10 }, (_, i) => {
+    const a = rot + Math.PI * i / 5 - Math.PI / 2, d = i % 2 ? r * .38 : r;
+    return `${(cx + d * Math.cos(a)).toFixed(2)},${(cy + d * Math.sin(a)).toFixed(2)}`; }).join(" ");
+  const flag = (w, h, body) => `<svg class="flag" viewBox="0 0 ${w} ${h}" role="img">${body}</svg>`;
+  const bars = (dir, cols) => cols.map((c, i) => dir === "v"
+    ? `<rect x="${i}" width="1" height="2" fill="${c}"/>` : `<rect y="${i}" width="3" height="1" fill="${c}"/>`).join("");
+  const FLAGS = {
+    it: flag(3, 2, bars("v", ["#009246", "#fff", "#ce2b37"])),
+    fr: flag(3, 2, bars("v", ["#0055a4", "#fff", "#ef4135"])),
+    de: flag(5, 3, `<rect width="5" height="1" fill="#000"/><rect y="1" width="5" height="1" fill="#dd0000"/><rect y="2" width="5" height="1" fill="#ffce00"/>`),
+    mx: flag(3, 2, bars("v", ["#006847", "#fff", "#ce1126"]) + `<circle cx="1.5" cy="1" r=".28" fill="#8c5a2b"/>`),
+    gr: flag(27, 18, Array.from({ length: 9 }, (_, i) => `<rect y="${i * 2}" width="27" height="2" fill="${i % 2 ? "#fff" : "#0d5eaf"}"/>`).join("") +
+      `<rect width="10" height="10" fill="#0d5eaf"/><rect x="4" width="2" height="10" fill="#fff"/><rect y="4" width="10" height="2" fill="#fff"/>`),
+    us: flag(19, 10, Array.from({ length: 13 }, (_, i) => `<rect y="${(i * 10 / 13).toFixed(3)}" width="19" height="${(10 / 13 + .01).toFixed(3)}" fill="${i % 2 ? "#fff" : "#b22234"}"/>`).join("") +
+      `<rect width="7.6" height="5.385" fill="#3c3b6e"/>` +
+      Array.from({ length: 12 }, (_, i) => `<circle cx="${(1 + (i % 4) * 1.85 + (Math.floor(i / 4) % 2) * .9).toFixed(2)}" cy="${(1 + Math.floor(i / 4) * 1.7).toFixed(2)}" r=".3" fill="#fff"/>`).join("")),
+    jp: flag(3, 2, `<rect width="3" height="2" fill="#fff"/><circle cx="1.5" cy="1" r=".6" fill="#bc002d"/>`),
+    cn: flag(30, 20, `<rect width="30" height="20" fill="#de2910"/><polygon points="${star(5, 5, 3)}" fill="#ffde00"/>` +
+      [[10, 2], [12, 4], [12, 7], [10, 9]].map(([x, y]) => `<polygon points="${star(x, y, 1)}" fill="#ffde00"/>`).join(""))
+  };
+
   // Die Gerichte, aus denen am Ende die Favoriten ermittelt werden: [Name, Bild]
   const DISHES = {
     pizza: ["Pizza", "🍕"], pasta: ["Pasta", "🍝"], sushi: ["Sushi", "🍣"], burger: ["Veggie-Burger", "🍔"],
     wok: ["Wok-Nudeln", "🥡"], griech: ["Griechisch", "🫒"], mex: ["Mexikanisch", "🌮"],
-    fisch: ["Fisch (z. B. Lachs)", "🐟"], bowl: ["Bowl oder Salat", "🥗"], flamm: ["Flammkuchen", "🫓"]
+    fisch: ["Fisch (z. B. Lachs)", "🐟"], bowl: ["Bowl oder Salat", "🥗"], flamm: ["Flammkuchen", "🫓"],
+    spaetzle: ["Käsespätzle", "🥘"]
   };
 
   // Antworten: [Text, Bild, Punkte für Gerichte]. multi: mehrere Antworten möglich.
   // kind "dessert": zählt nicht für die Gerichte, mit optionalem eigenen Wunsch. kind "text": nur Freitext.
   const QUESTIONS = [
     { q: "Worauf hast du gerade am meisten Lust?", a: [
-      ["Etwas Deftiges", "🥨", { burger: 2, pizza: 1, flamm: 1, mex: 1 }],
+      ["Etwas Deftiges", "🥨", { burger: 2, pizza: 1, flamm: 1, mex: 1, spaetzle: 2 }],
       ["Etwas Leichtes und Frisches", "🥒", { sushi: 2, bowl: 2, griech: 1, fisch: 1 }],
-      ["Etwas Gemütliches", "🛋️", { pasta: 2, pizza: 2, flamm: 1 }],
+      ["Etwas Gemütliches", "🛋️", { pasta: 2, pizza: 2, flamm: 1, spaetzle: 1 }],
       ["Etwas Exotisches", "🌴", { sushi: 1, wok: 2, mex: 2 }] ] },
     { q: "Was soll die Hauptrolle spielen?", a: [
       ["Fisch", "🐟", { fisch: 3, sushi: 2 }],
-      ["Käse", "🧀", { pizza: 2, pasta: 1, griech: 2, flamm: 2 }],
+      ["Käse", "🧀", { pizza: 2, pasta: 1, griech: 2, flamm: 2, spaetzle: 2 }],
       ["Gemüse", "🥦", { bowl: 2, wok: 1, griech: 1, mex: 1 }],
       ["Tofu oder Falafel", "🧆", { bowl: 1, wok: 2, griech: 1, burger: 1 }],
       ["Ist mir egal", "🤷‍♀️", {}] ] },
@@ -99,18 +123,20 @@
       ["Pommes", "🍟", { burger: 2, fisch: 1 }],
       ["Reis", "🍚", { sushi: 2, wok: 1, mex: 1, fisch: 1 }],
       ["Brot", "🥖", { griech: 2, flamm: 1, pizza: 1 }],
-      ["Nudeln", "🍜", { pasta: 3, wok: 2 }] ] },
+      ["Nudeln", "🍜", { pasta: 3, wok: 2, spaetzle: 1 }] ] },
     { q: "Wie groß ist dein Hunger?", a: [
       ["Nur ein kleiner Hunger", "🤏", { sushi: 1, bowl: 2, flamm: 1 }],
       ["Normaler Hunger", "🙂", { pasta: 1, wok: 1, griech: 1, fisch: 1 }],
-      ["Riesenhunger", "🤤", { burger: 2, pizza: 2, mex: 1 }] ] },
+      ["Riesenhunger", "🤤", { burger: 2, pizza: 2, mex: 1, spaetzle: 1 }] ] },
     { q: "In welchem Land würdest du heute gern essen?", a: [
-      ["Italien", "🇮🇹", { pizza: 2, pasta: 2 }],
-      ["Japan oder China", "🏮", { sushi: 2, wok: 2 }],
-      ["Griechenland", "🇬🇷", { griech: 3 }],
-      ["Mexiko", "🇲🇽", { mex: 3 }],
-      ["Frankreich", "🇫🇷", { flamm: 2, fisch: 1 }],
-      ["USA", "🇺🇸", { burger: 3 }] ] },
+      ["Deutschland", FLAGS.de, { spaetzle: 3, flamm: 1 }],
+      ["Italien", FLAGS.it, { pizza: 2, pasta: 2 }],
+      ["Frankreich", FLAGS.fr, { flamm: 2, fisch: 1 }],
+      ["Griechenland", FLAGS.gr, { griech: 3 }],
+      ["Japan", FLAGS.jp, { sushi: 3, fisch: 1 }],
+      ["China", FLAGS.cn, { wok: 3 }],
+      ["Mexiko", FLAGS.mx, { mex: 3 }],
+      ["USA", FLAGS.us, { burger: 3 }] ] },
     { q: "Gibt es etwas, das du heute auf keinen Fall willst?", multi: true,
       hint: "Tipp alles an, was heute nicht geht. Wenn alles okay ist, einfach weiter.",
       a: Object.entries(DISHES).map(([k, [name, img]]) => [name, img, { [k]: -100 }]) },
