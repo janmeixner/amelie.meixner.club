@@ -3,15 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fragen für Amelie</title>
+<title>Für Amelie</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Nunito+Sans:wght@400;600;700&display=swap">
 <style>
-  /* Layout: eine Karte in der Mitte, eine Frage pro Schritt, Fortschritt als Herzreihe */
+  /* Layout: Übersicht mit zwei Countdowns und zwei Kacheln; Quiz und Stimmung öffnen als Karte */
   :root {
     --bg: #fbf1ee; --card: #fffaf8; --fg: #3a1f24; --muted: #8a6a6f;
     --accent: #b8325a; --accent-soft: #f6d9e0; --line: #ecd6d6;
     --display: "Young Serif", Georgia, serif;
+    --on-bg: var(--fg); --on-bg-muted: var(--muted);
     --body: "Nunito Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
@@ -21,10 +22,11 @@
     --bg: #1d1216; --card: #2a1a20; --fg: #f6e8eb; --muted: #c4a3ab;
     --accent: #ff7aa0; --accent-soft: #4a2531; --line: #3d2830; color-scheme: dark }
   * { box-sizing: border-box; }
-  html, body { height: 100%; }
+  [hidden] { display: none !important; }
   body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--body);
-    display: grid; place-items: center; padding: 24px 16px; font-size: 16px; }
-  main { width: 100%; max-width: 32rem; }
+    padding-block: 28px; padding-inline: 16px; font-size: 16px; }
+  main { width: 100%; max-width: 32rem; margin: 0 auto; }
+  #home { display: grid; gap: 14px; }
   .card { background: var(--card); border: 1px solid var(--line); border-radius: 22px;
     padding: 32px 24px; box-shadow: 0 12px 40px -24px rgba(120,30,60,.35); }
   .hearts { display: flex; gap: 6px; justify-content: center; margin-bottom: 20px; }
@@ -60,6 +62,120 @@
   .center { display: flex; justify-content: center; margin-top: 8px; }
   .big { font-size: 48px; text-align: center; margin-bottom: 12px; color: var(--accent); }
   .note { font-size: 13px; color: var(--muted); text-align: center; margin-top: 16px; line-height: 1.5; }
+  /* Übersicht */
+  .hello { text-align: center; margin-bottom: 4px; }
+  .hello h1 { margin-bottom: 8px; }
+  .count { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 20px;
+    box-shadow: 0 12px 40px -24px rgba(120,30,60,.35); display: grid; gap: 16px; }
+  .count-head { display: flex; align-items: center; gap: 14px; }
+  .count-head h2 { text-align: left; margin: 0; font-size: 1.35rem; }
+  .count-icon { font-size: 34px; line-height: 1; flex: none; }
+  .sub { color: var(--muted); font-size: 14px; margin: 2px 0 0; }
+  .digits { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+  .unit { background: var(--accent-soft); border-radius: 14px; padding: 10px 4px; display: grid; justify-items: center; gap: 2px; }
+  .num { font-family: var(--display); font-size: clamp(1.6rem, 7vw, 2.1rem); color: var(--accent); font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .lbl { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+  .done { grid-column: 1 / -1; text-align: center; font-family: var(--display); font-size: 1.4rem; color: var(--accent); margin: 0; }
+  .tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .tile { font: inherit; color: var(--fg); background: var(--card); border: 1px solid var(--line); border-radius: 22px;
+    padding: 22px 12px; cursor: pointer; display: grid; justify-items: center; gap: 6px; text-align: center; min-width: 0;
+    box-shadow: 0 12px 40px -24px rgba(120,30,60,.35); transition: border-color .2s, transform .15s; }
+  .tile strong { font-family: var(--display); font-weight: 400; font-size: 1.2rem; hyphens: auto; }
+  .tile .pic { font-size: 40px; }
+  .tile:hover { border-color: var(--accent); }
+  .tile:active { transform: scale(.98); }
+  .tile:focus-visible, .link:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .moods { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+  .moods .opt { padding: 12px 4px; font-size: 13px; }
+  .card > .link:first-child { margin: -12px 0 8px; }
+  .together { display: inline-block; margin: 0; background: var(--accent-soft); color: var(--accent); border-radius: 999px;
+    padding: 8px 16px; font-weight: 700; font-size: 14px; line-height: 1.4; }
+  .together span { font-weight: 600; opacity: .8; }
+  .tile.wide { grid-column: 1 / -1; grid-template-columns: auto 1fr; justify-items: start; text-align: left; column-gap: 16px; row-gap: 2px; padding: 18px 20px; }
+  .tile.wide .pic { grid-row: span 2; align-self: center; }
+  .section-label { display: block; font-weight: 700; margin: 22px 0 10px; font-size: 15px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { font: inherit; font-size: 14px; padding: 8px 14px; border-radius: 999px; border: 1.5px solid var(--line);
+    background: transparent; color: var(--fg); cursor: pointer; }
+  .chip.picked { background: var(--accent-soft); border-color: var(--accent); font-weight: 700; }
+  .chip:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .input, .field input { font: inherit; font-size: 16px; color: var(--fg); background: transparent; width: 100%;
+    border: 1.5px solid var(--line); border-radius: 14px; padding: 12px 14px; }
+  .input:focus-visible, .field input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-color: var(--accent); }
+  .quip { text-align: center; color: var(--muted); font-style: italic; margin: 0 0 10px; line-height: 1.5; }
+  .err { color: var(--accent); text-align: center; font-weight: 700; margin: 14px 0 0; }
+  /* Jahreszeiten-Modi */
+  #fx-back, #fx-front { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  #fx-back { z-index: 0; } #fx-front { z-index: 60; }
+  main { position: relative; z-index: 1; }
+  .hello h1 { color: var(--on-bg); } .hello .eyebrow { color: var(--on-bg-muted); }
+  body[data-season="xmas"] { --on-bg: #fdf6ec; --on-bg-muted: #cfe3d2; --accent: #c62832; --accent-soft: #fbe1df;
+    background: radial-gradient(circle at 15% 8%, #3f7f58 0, transparent 38%), radial-gradient(circle at 90% 35%, #6f1d27 0, transparent 34%),
+      linear-gradient(180deg, #1f4a33, #11301f); background-attachment: fixed; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) body[data-season="xmas"] { --accent: #ff7a7a; --accent-soft: #4b2226; } }
+  :root[data-theme="dark"] body[data-season="xmas"] { --accent: #ff7a7a; --accent-soft: #4b2226; }
+  body[data-season="nye"] { --bg: #0b0d26; --card: #171a3d; --fg: #f3f0ff; --muted: #b9b4dc; --accent: #ffc94d; --accent-soft: #34305c;
+    --line: #2d3060; --on-bg: #ffffff; --on-bg-muted: #c9c4ee; color-scheme: dark;
+    background: radial-gradient(ellipse at 50% 120%, #2b2a6b 0, transparent 60%), linear-gradient(180deg, #05061a, #12153a); background-attachment: fixed; }
+  body[data-season="fasching"] { --on-bg: #2b1a3a; --on-bg-muted: #6b4f80; --accent: #7b2ff7; --accent-soft: #efe4ff;
+    background: radial-gradient(circle at 12% 14%, #ffd23f66 0 70px, transparent 71px), radial-gradient(circle at 88% 26%, #3bceac55 0 90px, transparent 91px),
+      radial-gradient(circle at 70% 88%, #ee426655 0 100px, transparent 101px), linear-gradient(160deg, #fff4d6, #ffe1ec 50%, #e0f0ff); background-attachment: fixed; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) body[data-season="fasching"] { --on-bg: #fff; --on-bg-muted: #d8c8f0;
+    --accent: #c89bff; --accent-soft: #3a2556; background: linear-gradient(160deg, #2a1340, #13233d); background-attachment: fixed; } }
+  :root[data-theme="dark"] body[data-season="fasching"] { --on-bg: #fff; --on-bg-muted: #d8c8f0; --accent: #c89bff; --accent-soft: #3a2556;
+    background: linear-gradient(160deg, #2a1340, #13233d); background-attachment: fixed; }
+  body[data-season="vday"] { --on-bg: #fff; --on-bg-muted: #ffe0e8; --accent: #d81b4f; --accent-soft: #ffe0e8;
+    background: radial-gradient(circle at 20% 10%, #ff9ab3 0, transparent 45%), linear-gradient(160deg, #ff6b8f, #b5174f); background-attachment: fixed; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) body[data-season="vday"] { --accent: #ff7aa0; --accent-soft: #4a1f2c; } }
+  :root[data-theme="dark"] body[data-season="vday"] { --accent: #ff7aa0; --accent-soft: #4a1f2c; }
+  body[data-season="halloween"] { --bg: #1a1024; --card: #261733; --fg: #f6ecff; --muted: #c2aed6; --accent: #ff8c1a; --accent-soft: #3d2547;
+    --line: #3a2650; --on-bg: #fff; --on-bg-muted: #e0c9ff; color-scheme: dark;
+    background: radial-gradient(circle at 82% 10%, #fff3c4 0 32px, #fff3c433 34px, transparent 90px), linear-gradient(180deg, #120a1c, #2a1238); background-attachment: fixed; }
+  body[data-season=""][data-snow="1"] { --on-bg: #fff; --on-bg-muted: #dbe8f7;
+    background: radial-gradient(circle at 20% 0%, #9cc0e6 0, transparent 50%), linear-gradient(180deg, #5f86b2, #2f4d73); background-attachment: fixed; }
+  body[data-snow="1"] .count, body[data-snow="1"] .tile { position: relative; }
+  .frost { position: absolute; left: 12px; right: 12px; top: -11px; height: 0; pointer-events: none; z-index: 2; }
+  .frost .cap { position: absolute; left: -4px; top: 0; filter: drop-shadow(0 2px 2px rgba(40,70,110,.18)); }
+  .frost .icicles { position: absolute; left: 0; top: 17px; }
+  .ice { transform-box: fill-box; transform-origin: 50% 0; animation: grow 3.5s cubic-bezier(.2,.7,.3,1) var(--d) both; }
+  @keyframes grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+  body[data-snow="1"]::after { content: ""; position: fixed; left: 0; right: 0; bottom: 0; height: 60px; z-index: 0; pointer-events: none;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 60' preserveAspectRatio='none'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%23ffffff'/><stop offset='1' stop-color='%23d8e6f4'/></linearGradient></defs><path d='M0 34 C40 18 70 30 110 24 S180 8 230 22 S320 36 360 20 S400 26 400 26 V60 H0Z' fill='url(%23g)'/><path d='M0 46 C60 34 120 44 190 38 S300 30 400 42 V60 H0Z' fill='%23eef4fb'/></svg>") bottom / 100% 100% no-repeat; }
+  #decor { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; color: var(--on-bg); }
+  .dec { position: absolute; line-height: 1; opacity: .9; }
+  .hang { position: absolute; top: 0; transform-origin: 20px 0; }
+  .sway { animation: sway 5s ease-in-out var(--d) infinite alternate; }
+  .float { animation: float 6s ease-in-out var(--d) infinite alternate; }
+  .twinkle { animation: twinkle 2.4s ease-in-out var(--d) infinite alternate; }
+  .glow { filter: drop-shadow(0 0 10px #ff9a3c); }
+  .star { color: #fff; }
+  .ground { position: absolute; left: 0; bottom: 0; width: 100%; height: 140px; }
+  .web { position: absolute; left: 0; top: 0; width: 130px; height: 130px; }
+  .streamer { position: absolute; width: 120px; height: 60px; opacity: .85; }
+  @keyframes sway { from { transform: rotate(-5deg); } to { transform: rotate(5deg); } }
+  @keyframes float { from { transform: translateY(-6px) rotate(-4deg); } to { transform: translateY(6px) rotate(4deg); } }
+  @keyframes twinkle { from { opacity: .35; } to { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .sway, .float, .twinkle, .ice { animation: none; } }
+  .wx-home { margin: 8px 0 0; color: var(--on-bg-muted); font-size: 14px; min-height: 1em; }
+  .garland { width: 100%; height: 34px; display: block; margin-top: -16px; }
+  .bulb { animation: blink 1.4s ease-in-out infinite alternate; } .bulb:nth-of-type(odd) { animation-delay: .7s; }
+  @keyframes blink { from { opacity: 1; } to { opacity: .35; } }
+  .ribbon { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 0; color: var(--on-bg);
+    font-family: var(--display); font-size: 1.2rem; }
+  .ribbon .e { font-size: 28px; } .cane { width: 18px; height: 36px; flex: none; }
+  .corner { display: none; }
+  @media (min-width: 960px) { body[data-season="xmas"] .corner { display: block; position: fixed; bottom: 24px; font-size: 72px; z-index: 1; pointer-events: none; }
+    .c1 { left: 32px; } .c2 { right: 32px; } }
+  .weather { display: flex; align-items: center; gap: 12px; margin: 0; padding-top: 14px; border-top: 1px dashed var(--line);
+    color: var(--muted); font-size: 14px; line-height: 1.4; }
+  .weather .w-ico { font-size: 28px; } .weather strong { color: var(--fg); font-size: 17px; }
+  .modal { position: fixed; inset: 0; z-index: 50; background: rgba(20, 8, 12, .55); display: grid; place-items: center; padding-inline: 16px; }
+  .modal-card { background: var(--card); color: var(--fg); border-radius: 24px; padding: 32px 24px; max-width: 24rem; width: 100%;
+    text-align: center; box-shadow: 0 30px 60px -20px rgba(0,0,0,.5); animation: pop .45s cubic-bezier(.2, 1.4, .4, 1) both; }
+  .modal-card .big { font-size: 64px; } .modal-card .lead { margin: 0 0 20px; }
+  @keyframes pop { from { transform: scale(.7); opacity: 0; } to { transform: none; opacity: 1; } }
+  .sim { margin-top: 24px; padding: 18px 20px; } .sim .section-label { margin-top: 0; }
+  @media (prefers-reduced-motion: reduce) { .bulb, .modal-card { animation: none; } }
   .fade { animation: fade .35s ease both; }
   @keyframes fade { from { opacity: .2; transform: translateY(6px); } to { opacity: 1; transform: none; } }
   @media (prefers-reduced-motion: reduce) { .fade { animation: none; } .opt, .hearts span { transition: none; } }
@@ -67,9 +183,16 @@
 </head>
 <body>
 
+<div id="decor" aria-hidden="true"></div>
+<canvas id="fx-back" aria-hidden="true"></canvas>
 <main>
-  <div class="card" id="card"></div>
+  <div id="home"></div>
+  <div class="card" id="card" hidden></div>
+  <div class="card sim" id="sim" hidden></div>
 </main>
+<div class="modal" id="modal" hidden></div>
+<canvas id="fx-front" aria-hidden="true"></canvas>
+<div class="corner c1" aria-hidden="true">🎅</div><div class="corner c2" aria-hidden="true">🎄</div>
 
 <script>
   // Mail-Versand über Web3Forms. Den Schlüssel bekommst du kostenlos auf web3forms.com.
@@ -157,12 +280,693 @@
       hint: "Ganz egal was, ich lese alles. Du kannst das Feld auch leer lassen.", placeholder: "Dein Wunsch …" }
   ];
 
-  const card = document.getElementById("card");
+  const MOODS = [["😍", "Verliebt"], ["😄", "Super"], ["🙂", "Gut"], ["😐", "Geht so"],
+                 ["😴", "Müde"], ["😤", "Genervt"], ["😔", "Nicht so gut"], ["😢", "Traurig"]];
+
+  const home = document.getElementById("home"), card = document.getElementById("card");
   const answers = QUESTIONS.map(() => []);   // gewählte Antwort-Indizes je Frage
   const notes = QUESTIONS.map(() => "");     // Freitext je Frage
-  let step = -1;
+  let step = 0, mood = null, moodNote = "";
   const esc = s => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const store = { get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } },
+                  set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} } };
+  const demo = ACCESS_KEY === "DEIN_ACCESS_KEY";
 
+  async function sendMail(subject, message) {
+    if (demo) return true;
+    try {
+      const r = await fetch("https://api.web3forms.com/submit", {
+        method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ access_key: ACCESS_KEY, subject, from_name: "amelie.meixner.club", message })
+      });
+      return (await r.json()).success;
+    } catch (e) { return false; }
+  }
+
+  function fade(el) { el.classList.remove("fade"); void el.offsetWidth; el.classList.add("fade"); }
+  function show(view) {
+    home.hidden = view !== "home"; card.hidden = view === "home";
+    fade(view === "home" ? home : card); window.scrollTo(0, 0);
+    if (view === "home") { renderHome(); if (!popupChecked) { popupChecked = true; checkPopup(); } }
+  }
+  let popupChecked = false;
+  const backHome = '<button class="link" id="home-btn">← Übersicht</button>';
+
+  // ---------- Sicherheitsfrage ----------
+  // Die Antworten stehen nur als Prüfsumme im Code, damit man sie im Quelltext nicht lesen kann.
+  // type "date": jede Schreibweise mit richtigem Tag und Monat zählt (24.8., 24.08.2025, 24. August …)
+  // type "words": jede Antwort, die eines der Lösungswörter enthält, zählt (Groß-/Kleinschreibung egal)
+  const GATE = [
+    { q: "An welchem Datum sind wir zusammengekommen?", type: "date",
+      h: ["42a72cd034ea94c009861cfda30816bade5df09010c50ffe9fd6baa7b3ae7618"] },
+    { q: "Wann hat der kleine Spatz Geburtstag?", type: "date",
+      h: ["a2711ebafde103affadcc8e17d5450e77261fe097b641d6b4b9a47311bbbce64"] },
+    { q: "Wo haben wir uns richtig kennengelernt?", type: "words", lens: [5, 6, 7, 8],
+      h: ["045a74c13ed41beb257ba5c136f7cb44c8973c211b7ca59dddfa83140eb97454", "3c4956c4f63cfd48dd89f107dbb3f1115268bf04306dc8686b8420416e17e1bb",
+          "eda6378ed8ea507f5e561cb0890520760b23a7b1f5e415efe08bef228fcb8009", "d9f9460b9f50838c0f7cf59258bb3c2fed5eaf730f9cac32236d16d6fe626133"] },
+    { q: "Wo war unser erstes Date?", type: "words", lens: [11, 6],
+      h: ["345c27d88d61ac7451653d9a78f894d3835410e5c43b37d321a6f5241eaf82a0", "b9bae50eb656e265145e0da5c3a94fe33817242d96a9a78134a97a9d77c038e1"] },
+    { q: "Wie ist der komplette Name von Henry?", type: "words", lens: [8],
+      h: ["deac52e12670fbb35cfc160c29452506c12824ac07b23c9778003b049bd95ff9", "e907716c512280078309e9a4cad11e21ca3d9ea9f58ac5bcc7e07e0e9e01458a"] },
+    { q: "Was isst der kleine Spatz am liebsten?", type: "words", lens: [5],
+      h: ["bc9412e38e91440ed3f765b37b11674ebc84fbdaf606adc769618619f3ec1eaf"] },
+    { q: "Wie heißt das Lieblingsrestaurant vom kleinen Spatz?", type: "words", lens: [7],
+      h: ["9444a138054aebe4a2cb46a2bee72de37304c1d0cec2757fad5697c04a9bb83e"] },
+    { q: "Wie lautet mein Spitzname für dich?", type: "words", lens: [5, 4],
+      h: ["0a300e398fbadd4024b6fc5371fc9d154429c0d69848be9dccc3df2759b0efac", "995fab27bf179febdeb395f824cd5213ae9ca5041bc1a9f2a2def81064af33b5"] }
+  ];
+  const UNLOCK_HOURS = 12;   // so lange merkt sich ihr Gerät die richtige Antwort
+  // Wechselnde Sprüche über der Sicherheitsfrage
+  const GATE_QUIPS = [
+    "Um sicherzugehen, dass du es wirklich bist …",
+    "Kurze Kontrolle, bevor es losgeht.",
+    "Nur Amelie kennt die Antwort. Also, beweis es!",
+    "Ausweiskontrolle! Keine Sorge, ist ganz einfach.",
+    "Bist du's wirklich? Dann ist das ein Klacks.",
+    "Hier kommt nur rein, wer die Antwort weiß.",
+    "Kleine Frage, bevor ich dich reinlasse.",
+    "Kein Zutritt für Fremde. Für dich natürlich schon.",
+    "Stopp! Wer da? Ach, du bist es bestimmt.",
+    "Erst die Frage, dann die Countdowns."
+  ];
+  const pick = list => list[Math.floor(Math.random() * list.length)];
+
+  async function sha(s) {
+    const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("amelie♥" + s));
+    return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join("");
+  }
+  const MONTHS = [["jan"], ["feb"], ["mär", "maer", "mar"], ["apr"], ["mai", "may"], ["jun"], ["jul"], ["aug"], ["sep"], ["okt", "oct"], ["nov"], ["dez", "dec"]];
+  function dateKeys(raw) {
+    const s = raw.toLowerCase(), keys = new Set();
+    MONTHS.forEach((names, i) => names.forEach(n =>
+      [...s.matchAll(new RegExp(`(\\d{1,2})\\.?\\s*${n}`, "g"))].forEach(m => keys.add(`${+m[1]}.${i + 1}`))));
+    [...s.matchAll(/(\d{4})\s*-\s*(\d{1,2})\s*-\s*(\d{1,2})/g)].forEach(m => keys.add(`${+m[3]}.${+m[2]}`));
+    [...s.matchAll(/(\d{1,2})\s*[./-]\s*(\d{1,2})/g)].forEach(m => keys.add(`${+m[1]}.${+m[2]}`));
+    return [...keys];
+  }
+  function wordKeys(raw, lens) {
+    const s = raw.toLowerCase().replace(/ß/g, "ss").replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/[^a-z]/g, "");
+    const out = new Set();
+    lens.forEach(L => { for (let i = 0; i + L <= s.length; i++) out.add(s.slice(i, i + L)); });
+    return [...out];
+  }
+  async function checkGate(q, input) {
+    for (const k of q.type === "date" ? dateKeys(input) : wordKeys(input, q.lens)) if (q.h.includes(await sha(k))) return true;
+    return false;
+  }
+
+  let gateQ = Math.floor(Math.random() * GATE.length);
+  const quip = pick(GATE_QUIPS);
+  function renderGate(msg = "") {
+    card.innerHTML = `
+      <div class="big" aria-hidden="true">🔒</div>
+      <p class="quip">${quip}</p>
+      <h2>${GATE[gateQ].q}</h2>
+      <form id="gate-form" class="gate">
+        <label class="field" for="gate-answer">Deine Antwort
+          <input id="gate-answer" type="text" autocomplete="off" autocapitalize="off" required></label>
+        ${msg ? `<p class="err" role="alert">${msg}</p>` : ""}
+        <div class="row">
+          <button type="button" class="link" id="other-q">Andere Frage</button>
+          <button class="btn" type="submit">Weiter</button>
+        </div>
+      </form>`;
+    document.getElementById("other-q").onclick = () => { gateQ = (gateQ + 1 + Math.floor(Math.random() * (GATE.length - 1))) % GATE.length; renderGate(); };
+    document.getElementById("gate-form").onsubmit = async e => {
+      e.preventDefault();
+      if (await checkGate(GATE[gateQ], document.getElementById("gate-answer").value)) {
+        store.set("unlocked", String(Date.now())); show("home");
+      } else renderGate("Hmm, das stimmt nicht ganz. Versuch es nochmal.");
+    };
+  }
+
+  // ---------- Date-Idee ----------
+  const DATE_TYPES = [["🍝", "Essen gehen"], ["👩‍🍳", "Zusammen kochen"], ["🥾", "Ausflug"], ["🎬", "Kino oder Kultur"],
+                      ["🧖‍♀️", "Wellness"], ["⚽", "Etwas Aktives"], ["🛋️", "Gemütlich zuhause"], ["🎁", "Überrasch mich"]];
+  const DATE_TIMES = ["Morgens", "Mittags", "Nachmittags", "Abends", "Ganzer Tag"];
+  const BUDGETS = ["Kostenlos", "Kleines Budget", "Mittel", "Darf mehr kosten"];
+  const plan = { types: [], day: "", time: null, budget: null, note: "" };
+
+  function renderDate() {
+    const today = new Date(Date.now() - new Date().getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
+    const chips = (list, key) => `<div class="chips">${list.map((t, i) =>
+      `<button type="button" class="chip${plan[key] === i ? " picked" : ""}" data-k="${key}" data-i="${i}" id="${key}-${i}">${t}</button>`).join("")}</div>`;
+    card.innerHTML = `
+      ${backHome}
+      <h2>Lass uns ein Date planen</h2>
+      <p class="section-label">Was schwebt dir vor?</p>
+      <div class="moods">${DATE_TYPES.map(([e, t], i) =>
+        `<button class="opt dtype${plan.types.includes(i) ? " picked" : ""}" data-i="${i}" id="dtype-${i}"><span class="pic" aria-hidden="true">${e}</span><span>${t}</span></button>`).join("")}</div>
+      <label class="section-label" for="date-day">Wann?</label>
+      <input class="input" id="date-day" type="date" min="${today}" value="${plan.day}">
+      <div style="margin-top:10px">${chips(DATE_TIMES, "time")}</div>
+      <p class="section-label">Budget</p>
+      ${chips(BUDGETS, "budget")}
+      <label class="field" for="date-note">Erzähl mir genauer, was du dir vorstellst
+        <textarea id="date-note" rows="4" placeholder="z. B. Picknick am See mit Sonnenuntergang">${esc(plan.note)}</textarea></label>
+      <div class="row"><span></span><button class="btn" id="date-send">Date-Idee senden</button></div>`;
+    const sendBtn = document.getElementById("date-send");
+    const ready = () => sendBtn.disabled = !(plan.types.length || plan.note.trim());
+    ready();
+    document.getElementById("home-btn").onclick = () => show("home");
+    card.querySelectorAll(".dtype").forEach(b => b.onclick = () => {
+      const i = +b.dataset.i;
+      plan.types = plan.types.includes(i) ? plan.types.filter(x => x !== i) : [...plan.types, i];
+      b.classList.toggle("picked"); ready();
+    });
+    card.querySelectorAll(".chip").forEach(b => b.onclick = () => {
+      const k = b.dataset.k, i = +b.dataset.i;
+      plan[k] = plan[k] === i ? null : i;
+      card.querySelectorAll(`.chip[data-k="${k}"]`).forEach(o => o.classList.toggle("picked", plan[k] === +o.dataset.i));
+    });
+    document.getElementById("date-day").onchange = e => plan.day = e.target.value;
+    document.getElementById("date-note").oninput = e => { plan.note = e.target.value; ready(); };
+    sendBtn.onclick = sendDate;
+  }
+
+  async function sendDate() {
+    card.innerHTML = `<div class="big" aria-hidden="true">💌</div><h2>Wird verschickt …</h2>`;
+    const what = plan.types.map(i => DATE_TYPES[i].join(" ")).join(", ") || "offen";
+    const day = plan.day ? new Date(plan.day + "T12:00").toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit", year: "numeric" }) : "";
+    const when = [day, plan.time !== null ? DATE_TIMES[plan.time] : ""].filter(Boolean).join(", ") || "offen";
+    const ok = await sendMail(`Amelies Date-Idee: ${what}${day ? " am " + day : ""}`,
+      `Was: ${what}\nWann: ${when}\nBudget: ${plan.budget !== null ? BUDGETS[plan.budget] : "offen"}\n\nIhre Idee:\n${plan.note.trim() || "keine weitere Beschreibung"}`);
+    if (ok) {
+      card.innerHTML = `<div class="big" aria-hidden="true">🥰</div><h2>Klingt nach einem Plan!</h2>
+        <p class="lead">Jan hat deine Date-Idee bekommen.</p>
+        ${demo ? `<p class="note">Vorschau, hier wird nichts verschickt. Betreff der Mail: „Amelies Date-Idee: ${esc(what)}${day ? " am " + day : ""}“</p>` : ""}
+        <div class="center"><button class="btn" id="home-btn">Zur Übersicht</button></div>`;
+      Object.assign(plan, { types: [], day: "", time: null, budget: null, note: "" });
+      document.getElementById("home-btn").onclick = () => show("home");
+    } else failed(sendDate);
+  }
+
+  // ---------- Zusammen seit ----------
+  const TOGETHER = new Date(2025, 7, 24);
+  function togetherText() {
+    const n = now(); n.setHours(0, 0, 0, 0);
+    let y = n.getFullYear() - TOGETHER.getFullYear(), m = n.getMonth() - TOGETHER.getMonth(), d = n.getDate() - TOGETHER.getDate();
+    if (d < 0) { m--; d += new Date(n.getFullYear(), n.getMonth(), 0).getDate(); }
+    if (m < 0) { y--; m += 12; }
+    const days = Math.round((n - TOGETHER) / 864e5);
+    const pl = (v, one, many) => `${v} ${v === 1 ? one : many}`;
+    const parts = [y && pl(y, "Jahr", "Jahren"), m && pl(m, "Monat", "Monaten"), d && pl(d, "Tag", "Tagen")].filter(Boolean);
+    const txt = parts.length > 1 ? parts.slice(0, -1).join(", ") + " und " + parts.at(-1) : parts[0] || "heute";
+    return { txt, days };
+  }
+
+  // ---------- Zeit, Jahreszeiten-Modi und Countdowns ----------
+  // In der Vorschau lässt sich ein anderer Zeitpunkt simulieren (siehe Leiste unten), live gilt immer die echte Zeit.
+  const SIMULATE = {
+    "Heute": null, "1. Advent": "2026-11-29T18:00:00+01:00", "Dezember": "2026-12-10T18:00:00+01:00",
+    "Heiligabend": "2026-12-24T19:00:00+01:00", "Nach Weihnachten": "2026-12-28T12:00:00+01:00", "Silvester": "2026-12-31T22:00:00+01:00",
+    "Neujahr": "2027-01-01T13:00:00+01:00", "Januar": "2027-01-15T12:00:00+01:00", "Fasching": "2027-02-06T12:00:00+01:00",
+    "Valentinstag": "2027-02-14T12:00:00+01:00", "März": "2027-03-10T12:00:00+01:00", "Ostern": "2027-03-28T12:00:00+02:00",
+    "Mai": "2027-05-10T12:00:00+02:00", "August": "2027-08-10T12:00:00+02:00", "Geburtstag": "2027-09-12T10:00:00+02:00",
+    "Monatstag": "2026-10-24T10:00:00+02:00", "Jahrestag": "2027-08-24T10:00:00+02:00", "Juni": "2027-06-10T12:00:00+02:00",
+    "Halloween": "2026-10-31T20:00:00+01:00", "Nikolaus": "2026-12-06T09:00:00+01:00",
+    "Schnee": "2027-01-20T12:00:00+01:00", "Advent + Schnee": "2026-12-12T17:00:00+01:00"
+  };
+  let offset = 0, simName = "Heute";
+  const now = () => new Date(Date.now() + offset);
+  const ymd = d => `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+
+  const SCOT_FLAG = `<svg class="flag" viewBox="0 0 5 3" role="img"><rect width="5" height="3" fill="#005eb8"/><path d="M0 0L5 3M5 0L0 3" stroke="#fff" stroke-width=".6"/></svg>`;
+  const CANE = flip => `<svg class="cane" viewBox="0 0 24 48" aria-hidden="true"${flip ? ' style="transform:scaleX(-1)"' : ""}>
+    <path d="M7 46V15a8 8 0 0 1 16 0" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+    <path d="M7 46V15a8 8 0 0 1 16 0" fill="none" stroke="#d62b37" stroke-width="6" stroke-dasharray="4 5"/></svg>`;
+
+  function adventStart(y) {   // 1. Advent = vier Sonntage vor Heiligabend
+    const d = new Date(y, 11, 24); while (d.getDay() !== 0) d.setDate(d.getDate() - 1);
+    d.setDate(d.getDate() - 21); return d;
+  }
+  function easter(y) {   // Ostersonntag (Gaußsche Osterformel)
+    const a = y % 19, b = Math.floor(y / 100), c = y % 100, d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25),
+      g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4,
+      l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451), x = h + l - 7 * m + 114;
+    return new Date(y, Math.floor(x / 31) - 1, x % 31 + 1);
+  }
+  const addDays = (d, n, h = 0, mi = 0) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n, h, mi);
+  const fmtDay = d => d.toLocaleDateString("de-DE", { weekday: "short", day: "numeric", month: "long" });
+
+  // Jährlicher Countdown-Kalender. from = ab wann er zu sehen ist, at = Ziel, done = Text am Tag selbst (bis doneUntil).
+  function yearEvents(y) {
+    const e = easter(y), wf = addDays(e, -52), ash = addDays(e, -46);
+    return [
+      { id: "advent", title: "Adventskalender", icon: "🎄", sub: "bis 1. Dezember, 0:00 Uhr", from: new Date(y, 8, 13), at: new Date(y, 11, 1) },
+      { id: "xmas", title: "Weihnachten", icon: "🎅", sub: "bis Heiligabend, 18:00 Uhr", from: new Date(y, 11, 1), at: new Date(y, 11, 24, 18),
+        doneUntil: new Date(y, 11, 27), done: "Frohe Weihnachten! 🎄" },
+      { id: "ny", title: "Neues Jahr", icon: "🎆", sub: "bis 1. Januar, 0:00 Uhr", from: new Date(y, 11, 27), at: new Date(y + 1, 0, 1),
+        doneUntil: new Date(y + 1, 0, 2), done: "Frohes neues Jahr! 🎆" },
+      { id: "wf", title: "Fasching", icon: "🎭", sub: `bis Altweiberfasching, ${fmtDay(wf)}, 11:11 Uhr`, from: new Date(y, 0, 2), at: addDays(wf, 0, 11, 11) },
+      { id: "fasching", title: "Fasching läuft!", icon: "🤡", sub: "Helau! Noch bis Aschermittwoch", from: addDays(wf, 0, 11, 11), at: ash },
+      { id: "vday", title: "Valentinstag", icon: "💘", sub: "bis 14. Februar, 0:00 Uhr", from: new Date(y, 0, 2), at: new Date(y, 1, 14),
+        doneUntil: new Date(y, 1, 15), done: "Happy Valentinstag! 💘" },
+      { id: "easter", title: "Ostern", icon: "🐣", sub: `bis Ostersonntag, ${fmtDay(e)}`, from: new Date(y, 0, 2), at: e,
+        doneUntil: addDays(e, 2), done: "Frohe Ostern! 🐣" },
+      { id: "jt", title: "Unser Jahrestag", icon: "🥂", sub: "bis 24. August", from: addDays(e, 2), at: new Date(y, 7, 24),
+        doneUntil: new Date(y, 7, 25), done: "Happy Jahrestag! 🥂" },
+      { id: "bday", title: "Dein Geburtstag", icon: "🎂", sub: "bis zum 12. September", from: new Date(y, 7, 25), at: new Date(y, 8, 12),
+        doneUntil: new Date(y, 8, 13), done: "Alles Gute zum Geburtstag! 🎂" }
+    ];
+  }
+  function seasonal(n) {
+    const y = n.getFullYear();
+    const active = [...yearEvents(y - 1), ...yearEvents(y)].filter(e => n >= e.from && (n < e.at || (e.doneUntil && n < e.doneUntil)));
+    return active.find(e => n >= e.at) || active.sort((a, b) => a.at - b.at)[0] || null;
+  }
+
+  // Urlaube trägt Jan selbst ein (bzw. lässt sie eintragen). Sie verschwinden 14 Tage nach dem Start.
+  const TRIPS = [
+    { id: "scot", title: "Schottland-Urlaub", icon: SCOT_FLAG, sub: "bis 5. Januar, 22:20 Uhr", at: new Date("2027-01-05T22:20:00+01:00"), weather: true }
+  ];
+
+  function season(n = now()) {
+    const y = n.getFullYear(), m = n.getMonth(), d = n.getDate();
+    if ((m === 11 && d >= 30) || (m === 0 && d === 1)) return "nye";
+    if (n >= adventStart(y) && n < new Date(y, 11, 27)) return "xmas";
+    if (m === 1 && d === 14) return "vday";
+    if (m === 9 && d === 31) return "halloween";
+    const e = easter(y);
+    if (n >= addDays(e, -52) && n < addDays(e, -46)) return "fasching";
+    return "";
+  }
+  function countdowns(n = now()) {
+    const s = seasonal(n);
+    return (s ? [s] : []).concat(TRIPS.filter(t => n < new Date(t.at.getTime() + 14 * 864e5)));
+  }
+
+  // ---------- Wetter: Edinburgh (Schottland-Karte) und Kirchzell (Schnee-Theme), Open-Meteo ohne Schlüssel ----------
+  const PLACES = [{ name: "Edinburgh", lat: 55.95, lon: -3.19 }, { name: "Kirchzell", lat: 49.62, lon: 9.18 }];
+  const SNOW_CODES = [71, 73, 75, 77, 85, 86];
+  let weather = null, home_wx = null, forceSnow = null;
+  const WCODES = [[[0], "☀️", "Sonnig"], [[1, 2], "🌤️", "Leicht bewölkt"], [[3], "☁️", "Bewölkt"], [[45, 48], "🌫️", "Nebel"],
+    [[51, 53, 55, 56, 57], "🌦️", "Nieselregen"], [[61, 63, 65, 66, 67, 80, 81, 82], "🌧️", "Regen"],
+    [[71, 73, 75, 77, 85, 86], "🌨️", "Schnee"], [[95, 96, 99], "⛈️", "Gewitter"]];
+  const describe = j => {
+    const w = WCODES.find(([c]) => c.includes(j.current.weather_code)) || [[], "🌡️", "Wetter"];
+    return { code: j.current.weather_code, icon: w[1], text: w[2], t: Math.round(j.current.temperature_2m),
+             min: Math.round(j.daily.temperature_2m_min[0]), max: Math.round(j.daily.temperature_2m_max[0]) };
+  };
+  async function loadWeather() {
+    try {
+      const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${PLACES.map(p => p.lat)}&longitude=${PLACES.map(p => p.lon)}` +
+        "&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1");
+      const j = await r.json(), list = Array.isArray(j) ? j : [j];
+      weather = describe(list[0]); home_wx = list[1] ? describe(list[1]) : null;
+    } catch (e) { weather = { error: true }; home_wx = null; }
+    applySeason(); paintWeather();
+  }
+  const snowing = () => forceSnow !== null ? forceSnow : !!(home_wx && SNOW_CODES.includes(home_wx.code));
+  function paintWeather() {
+    const el = document.getElementById("weather"), hw = document.getElementById("wx-home");
+    if (hw) hw.innerHTML = forceSnow ? "🌨️ Schnee in Kirchzell (simuliert)" : home_wx ? `${home_wx.icon} ${home_wx.t}° ${home_wx.text} in Kirchzell` : "";
+    if (!el) return;
+    el.innerHTML = !weather ? `<span class="w-ico" aria-hidden="true">⏳</span><span>Wetter in Edinburgh wird geladen …</span>`
+      : weather.error ? `<span class="w-ico" aria-hidden="true">🌥️</span><span>Wetter in Edinburgh gerade nicht verfügbar</span>`
+      : `<span class="w-ico" aria-hidden="true">${weather.icon}</span><span><strong>${weather.t}°</strong> ${weather.text} in Edinburgh<br>heute ${weather.min}° bis ${weather.max}°</span>`;
+  }
+  loadWeather(); setInterval(loadWeather, 30 * 6e4);
+
+  // ---------- Hintergrund-Deko je Theme ----------
+  const decorEl = document.getElementById("decor");
+  const R = (a, b) => a + Math.random() * (b - a);
+  const hang = (x, len, body, cls = "") => `<div class="hang ${cls}" style="left:${x}%;--len:${len}px;--d:${R(0, 3).toFixed(2)}s">
+      <svg viewBox="0 0 40 ${len + 46}" width="40" height="${len + 46}"><line x1="20" y1="0" x2="20" y2="${len}" stroke="currentColor" stroke-width="1.2" opacity=".6"/>
+      <g transform="translate(0 ${len})">${body}</g></svg></div>`;
+  const bauble = c => `<rect x="16" y="0" width="8" height="6" rx="1.5" fill="#d9b44a"/>
+      <circle cx="20" cy="22" r="16" fill="${c}"/><circle cx="20" cy="22" r="16" fill="url(#shine)"/>
+      <path d="M6 20q14 7 28 0" stroke="#fff" stroke-opacity=".45" stroke-width="2" fill="none"/>`;
+  const heartShape = c => `<path d="M20 38C6 28 2 20 2 13a9 9 0 0 1 18-3a9 9 0 0 1 18 3c0 7-4 15-18 25z" fill="${c}"/><path d="M9 11a5 5 0 0 1 6-3" stroke="#fff" stroke-opacity=".6" stroke-width="2" fill="none" stroke-linecap="round"/>`;
+  const at = (x, y, txt, size, cls = "") => `<span class="dec ${cls}" style="left:${x}%;top:${y}%;font-size:${size}px;--d:${R(0, 4).toFixed(2)}s">${txt}</span>`;
+  const atB = (x, b, txt, size, cls = "") => `<span class="dec ${cls}" style="left:${x}%;bottom:${b}px;font-size:${size}px;--d:${R(0, 4).toFixed(2)}s">${txt}</span>`;
+  function trees(snowy, color = "#173d2a") {
+    let p = ""; for (let i = 0; i < 9; i++) {
+      const x = i * 50 + R(-8, 8), h = R(70, 130), w = h * .55;
+      p += `<path d="M${x} 140 L${x + w / 2} ${140 - h} L${x + w} 140 Z" fill="${color}"/>`;
+      if (snowy) p += `<path d="M${x + w * .3} ${140 - h * .6} L${x + w / 2} ${140 - h} L${x + w * .7} ${140 - h * .6} Q${x + w / 2} ${140 - h * .52} ${x + w * .3} ${140 - h * .6}Z" fill="#fff" opacity=".92"/>`;
+    }
+    return `<svg class="ground" viewBox="0 0 440 140" preserveAspectRatio="xMidYMax slice">${p}</svg>`;
+  }
+  function skyline() {
+    let p = "", x = 0;
+    while (x < 440) { const w = R(22, 46), h = R(30, 100);
+      p += `<rect x="${x}" y="${140 - h}" width="${w}" height="${h}" fill="#070818"/>`;
+      for (let wy = 140 - h + 8; wy < 132; wy += 12) for (let wx = x + 5; wx < x + w - 6; wx += 9)
+        if (Math.random() < .35) p += `<rect x="${wx}" y="${wy}" width="4" height="5" fill="#ffd166" opacity=".8"/>`;
+      x += w + 2; }
+    return `<svg class="ground" viewBox="0 0 440 140" preserveAspectRatio="xMidYMax slice">${p}</svg>`;
+  }
+  function graves() {
+    let p = ""; for (let i = 0; i < 6; i++) { const x = i * 75 + R(0, 25), h = R(34, 54);
+      p += `<path d="M${x} 140 V${140 - h + 14} a14 14 0 0 1 28 0 V140Z" fill="#2b1f3a"/><text x="${x + 14}" y="${140 - h + 26}" font-size="8" fill="#6f5a8a" text-anchor="middle" font-family="sans-serif">RIP</text>`; }
+    p += `<path d="M0 140 Q110 118 220 132 T440 128 V140Z" fill="#1a1024"/>`;
+    return `<svg class="ground" viewBox="0 0 440 140" preserveAspectRatio="xMidYMax slice">${p}</svg>`;
+  }
+  const web = `<svg class="web" viewBox="0 0 120 120" aria-hidden="true"><g stroke="#e9dcff" stroke-opacity=".45" fill="none" stroke-width=".8">
+      ${[0, 15, 30, 45, 60, 75, 90].map(a => `<line x1="0" y1="0" x2="${120 * Math.cos(a * Math.PI / 180)}" y2="${120 * Math.sin(a * Math.PI / 180)}"/>`).join("")}
+      ${[25, 45, 65, 85, 105].map(r => `<path d="${[0, 15, 30, 45, 60, 75, 90].map((a, i) => `${i ? "L" : "M"}${(r * Math.cos(a * Math.PI / 180)).toFixed(1)} ${(r * Math.sin(a * Math.PI / 180)).toFixed(1)}`).join(" ")}"/>`).join("")}
+      </g><line x1="78" y1="60" x2="78" y2="104" stroke="#e9dcff" stroke-opacity=".5"/><text x="70" y="116" font-size="16">🕷️</text></svg>`;
+  const streamer = (y, c, flip) => `<svg class="streamer" style="top:${y}%;${flip ? "right:-10px;transform:scaleX(-1)" : "left:-10px"}" viewBox="0 0 120 60">
+      <path d="M0 10 C30 0 30 50 60 30 S90 0 120 40" stroke="${c}" stroke-width="5" fill="none" stroke-linecap="round"/></svg>`;
+
+  function renderDecor() {
+    const s = document.body.dataset.season, snow = document.body.dataset.snow === "1";
+    let h = `<svg width="0" height="0" style="position:absolute"><defs><radialGradient id="shine" cx=".35" cy=".3" r=".7">
+      <stop offset="0" stop-color="#fff" stop-opacity=".7"/><stop offset=".35" stop-color="#fff" stop-opacity=".1"/><stop offset="1" stop-color="#000" stop-opacity=".25"/></radialGradient></defs></svg>`;
+    if (s === "xmas") {
+      h += [[3, 30, "#c62832"], [11, 70, "#d9b44a"], [19, 18, "#2e7d4f"], [80, 24, "#2e7d4f"], [88, 64, "#c62832"], [96, 34, "#d9b44a"]]
+        .map(([x, l, c]) => hang(x, l, bauble(c), "sway")).join("");
+      h += at(4, 34, "⭐", 22, "twinkle") + at(92, 30, "⭐", 18, "twinkle") + at(2, 52, "🍪", 26, "float") + at(93, 56, "🎁", 30, "float")
+        + at(5, 72, "🦌", 30, "float") + at(91, 76, "☃️", 30, "float") + at(48, 2, "✨", 16, "twinkle");
+      h += trees(true);
+    } else if (s === "nye") {
+      for (let i = 0; i < 40; i++) h += at(R(0, 100).toFixed(1), R(0, 70).toFixed(1), "·", R(14, 26) | 0, "twinkle star");
+      h += at(4, 40, "🥂", 28, "float") + at(92, 44, "🍾", 28, "float") + at(6, 64, "🎉", 26, "float") + at(90, 68, "✨", 24, "twinkle");
+      h += skyline();
+    } else if (s === "fasching") {
+      h += streamer(8, "#ff4f8b") + streamer(26, "#3bceac", true) + streamer(48, "#ffd23f") + streamer(70, "#7b2ff7", true);
+      h += at(3, 18, "🎭", 30, "float") + at(91, 14, "🎈", 32, "float") + at(5, 40, "🎈", 28, "float") + at(92, 42, "🥳", 28, "float")
+        + at(4, 66, "🎺", 26, "float") + at(91, 70, "🤡", 28, "float") + at(48, 1, "🎊", 22, "twinkle");
+    } else if (s === "vday") {
+      h += [[4, 26, "#ff3d6e"], [12, 60, "#ffffff"], [20, 14, "#ffb3c6"], [79, 20, "#ffb3c6"], [87, 56, "#ff3d6e"], [95, 30, "#ffffff"]]
+        .map(([x, l, c]) => hang(x, l, heartShape(c), "sway")).join("");
+      h += at(3, 46, "🌹", 28, "float") + at(92, 50, "💌", 28, "float") + at(5, 70, "💕", 26, "float") + at(90, 74, "🌹", 26, "float");
+    } else if (s === "halloween") {
+      h += web + at(88, 22, "👻", 34, "float") + at(4, 46, "👻", 28, "float") + at(92, 52, "🕸️", 26, "twinkle") + at(6, 70, "🍬", 24, "float");
+      h += atB(4, 6, "🎃", 40, "glow") + atB(20, 2, "🎃", 30, "glow") + atB(78, 4, "🎃", 34, "glow") + atB(92, 2, "🎃", 44, "glow");
+      h += graves();
+    } else if (snow) {
+      h += at(4, 30, "❄️", 24, "twinkle") + at(92, 26, "❄️", 20, "twinkle") + at(5, 60, "🧣", 26, "float") + at(91, 64, "⛄", 32, "float");
+      h += trees(true, "#24425f");
+    }
+    decorEl.innerHTML = h;
+  }
+
+  // ---------- Schneehauben und Eiszapfen auf den Kacheln ----------
+  function snowCap(w) {
+    const n = Math.max(6, Math.round(w / 34)); let d = `M0 18 Q-3 10 6 8`;
+    for (let i = 1; i <= n; i++) { const x = 6 + (w - 12) * i / n, cx = x - (w - 12) / n / 2; d += ` Q${cx.toFixed(1)} ${R(-2, 5).toFixed(1)} ${x.toFixed(1)} ${R(5, 9).toFixed(1)}`; }
+    d += ` Q${w + 3} 10 ${w} 18`;
+    // kleine Schneenasen, die über den Rand hängen
+    for (let i = 0; i < 3; i++) { const x = R(30, w - 30); d += ` L${(x + 9).toFixed(1)} 18 Q${(x + 4).toFixed(1)} ${R(22, 27).toFixed(1)} ${x.toFixed(1)} 18`; }
+    return `<svg class="cap" viewBox="-4 0 ${w + 8} 30" width="${w + 8}" height="30" aria-hidden="true"><defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#dfeaf6"/></linearGradient></defs><path d="${d} Z" fill="url(#cg)"/></svg>`;
+  }
+  function icicles(w) {
+    let p = "", x = R(16, 30);
+    while (x < w - 20) {
+      const len = R(10, 44), iw = R(5, 11);
+      p += `<path class="ice" style="--d:${R(0, 1.5).toFixed(2)}s" d="M${x.toFixed(1)} 0 Q${(x + iw * .35).toFixed(1)} ${(len * .6).toFixed(1)} ${(x + iw / 2).toFixed(1)} ${len.toFixed(1)} Q${(x + iw * .65).toFixed(1)} ${(len * .6).toFixed(1)} ${(x + iw).toFixed(1)} 0Z" fill="url(#ig)"/>`;
+      p += `<path class="ice" style="--d:${R(0, 1.5).toFixed(2)}s" d="M${(x + iw * .3).toFixed(1)} 1 L${(x + iw * .45).toFixed(1)} ${(len * .7).toFixed(1)}" stroke="#fff" stroke-opacity=".8" stroke-width="1"/>`;
+      x += iw + R(4, 26) + (Math.random() < .25 ? R(20, 50) : 0);
+    }
+    return `<svg class="icicles" viewBox="0 0 ${w} 46" width="${w}" height="46" aria-hidden="true"><defs><linearGradient id="ig" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".95"/><stop offset=".6" stop-color="#d6ecff" stop-opacity=".8"/><stop offset="1" stop-color="#bfe0ff" stop-opacity=".35"/></linearGradient></defs>${p}</svg>`;
+  }
+  function decorateSnow() {
+    document.querySelectorAll(".frost").forEach(e => e.remove());
+    if (document.body.dataset.snow !== "1") return;
+    document.querySelectorAll("#home .count, #home .tile").forEach(el => {
+      const w = el.offsetWidth - 24, f = document.createElement("div");
+      f.className = "frost"; f.innerHTML = snowCap(w) + icicles(w); el.prepend(f);
+    });
+  }
+  let decoKey = "";
+  function refreshDecor() {
+    const k = document.body.dataset.season + "|" + document.body.dataset.snow;
+    if (k !== decoKey) { decoKey = k; renderDecor(); }
+    decorateSnow();
+  }
+  addEventListener("resize", () => { clearTimeout(refreshDecor.t); refreshDecor.t = setTimeout(decorateSnow, 200); });
+
+  // ---------- Effekte: Schnee, Feuerwerk, Konfetti ----------
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const back = document.getElementById("fx-back"), front = document.getElementById("fx-front");
+  const bctx = back.getContext("2d"), fctx = front.getContext("2d");
+  let W = 0, H = 0, flakes = [], rockets = [], sparks = [], confetti = [], bits = [], floaters = [], bats = [];
+  function resize() {
+    const r = devicePixelRatio || 1; W = innerWidth; H = innerHeight;
+    [back, front].forEach(c => { c.width = W * r; c.height = H * r; c.getContext("2d").setTransform(r, 0, 0, r, 0, 0); });
+  }
+  addEventListener("resize", resize); resize();
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  const flakeSprite = (() => {   // weiche Flocke mit unscharfem Rand
+    const c = document.createElement("canvas"); c.width = c.height = 32; const g = c.getContext("2d");
+    const rg = g.createRadialGradient(16, 16, 0, 16, 16, 16);
+    rg.addColorStop(0, "rgba(255,255,255,1)"); rg.addColorStop(.35, "rgba(255,255,255,.9)"); rg.addColorStop(1, "rgba(255,255,255,0)");
+    g.fillStyle = rg; g.fillRect(0, 0, 32, 32); return c;
+  })();
+  const FW_COLORS = ["#ffd166", "#ff7aa0", "#7cd4ff", "#ffffff", "#b388ff", "#7dffb0"];
+  function frame() {
+    const mode = document.body.dataset.season;
+    bctx.clearRect(0, 0, W, H);
+    const snowNow = document.body.dataset.snow === "1";
+    if (mode === "xmas" || snowNow) {
+      const want = snowNow ? 220 : 110, t = performance.now() / 1000, wind = Math.sin(t / 7) * .5 + Math.sin(t / 2.3) * .15;
+      if (flakes.length > want) flakes.length = want;
+      while (flakes.length < want) { const z = Math.pow(Math.random(), 1.8) * .9 + .1;   // Tiefe: meist kleine, ferne Flocken
+        flakes.push({ x: rnd(0, W), y: rnd(-H, H), z, r: .6 + z * 3.6, v: .25 + z * 1.1, s: rnd(0, 6), a: .25 + z * .65 }); }
+      flakes.forEach(f => {
+        if (!reduce) { f.y += f.v; f.s += .008 + f.z * .01; f.x += Math.sin(f.s) * (.2 + f.z * .5) + wind * f.z;
+          if (f.y > H + 8) { f.y = -8; f.x = rnd(-20, W + 20); } if (f.x > W + 20) f.x = -20; if (f.x < -20) f.x = W + 20; }
+        bctx.globalAlpha = f.a; bctx.drawImage(flakeSprite, f.x - f.r * 2, f.y - f.r * 2, f.r * 4, f.r * 4);
+      });
+      bctx.globalAlpha = 1;
+    }
+    if (mode === "halloween") {
+      while (bats.length < 7) bats.push({ x: rnd(-W, 0), y: rnd(H * .05, H * .6), v: rnd(.8, 2), s: rnd(18, 34), w: rnd(0, 6) });
+      bctx.globalAlpha = .8;
+      bats.forEach(b => {
+        if (!reduce) { b.x += b.v; b.w += .08; if (b.x > W + 40) { b.x = -40; b.y = rnd(H * .05, H * .6); } }
+        bctx.font = `${b.s}px sans-serif`; bctx.fillText("🦇", b.x, b.y + Math.sin(b.w) * 10);
+      });
+      bctx.globalAlpha = 1;
+    }
+    if (mode === "fasching") {
+      while (bits.length < 60) bits.push({ x: rnd(0, W), y: rnd(-H, H), v: rnd(.5, 1.4), r: rnd(0, 6), vr: rnd(-.05, .05), c: FW_COLORS[Math.floor(rnd(0, 6))] });
+      bits.forEach(b => {
+        if (!reduce) { b.y += b.v; b.r += b.vr; if (b.y > H + 8) { b.y = -8; b.x = rnd(0, W); } }
+        bctx.save(); bctx.translate(b.x, b.y); bctx.rotate(b.r); bctx.fillStyle = b.c; bctx.fillRect(-4, -2, 8, 4); bctx.restore();
+      });
+    }
+    if (mode === "vday") {
+      while (floaters.length < 24) floaters.push({ x: rnd(0, W), y: rnd(0, H * 1.2), v: rnd(.3, .9), s: rnd(14, 30), w: rnd(0, 6) });
+      bctx.fillStyle = "rgba(255,255,255,.55)";
+      floaters.forEach(h => {
+        if (!reduce) { h.y -= h.v; h.w += .02; if (h.y < -30) { h.y = H + 30; h.x = rnd(0, W); } }
+        bctx.font = `${h.s}px sans-serif`; bctx.fillText("♥", h.x + Math.sin(h.w) * 8, h.y);
+      });
+    }
+    if (mode === "nye" && !reduce) {
+      if (Math.random() < .03) rockets.push({ x: rnd(W * .1, W * .9), y: H, vy: rnd(-9, -6.5), top: rnd(H * .12, H * .45), c: FW_COLORS[Math.floor(rnd(0, 6))] });
+      rockets = rockets.filter(k => {
+        k.y += k.vy; bctx.fillStyle = k.c; bctx.fillRect(k.x, k.y, 2, 6);
+        if (k.y <= k.top) { for (let i = 0; i < 70; i++) { const a = rnd(0, 7), sp = rnd(1, 4.2); sparks.push({ x: k.x, y: k.y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, l: 1, c: k.c }); } return false; }
+        return true;
+      });
+      sparks = sparks.filter(p => {
+        p.x += p.vx; p.y += p.vy; p.vy += .05; p.vx *= .985; p.l -= .012;
+        bctx.globalAlpha = Math.max(p.l, 0); bctx.fillStyle = p.c; bctx.fillRect(p.x, p.y, 2.2, 2.2);
+        return p.l > 0;
+      });
+      bctx.globalAlpha = 1;
+    }
+    fctx.clearRect(0, 0, W, H);
+    confetti = confetti.filter(c => {
+      c.y += c.vy; c.x += c.vx; c.r += c.vr; c.vy += .03;
+      fctx.save(); fctx.translate(c.x, c.y); fctx.rotate(c.r); fctx.fillStyle = c.c;
+      if (c.heart) { fctx.font = "18px sans-serif"; fctx.fillText("♥", -6, 6); } else fctx.fillRect(-4, -2.5, 8, 5);
+      fctx.restore(); return c.y < H + 20;
+    });
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  function burst(hearts) {
+    if (reduce) return;
+    for (let i = 0; i < 140; i++) confetti.push({ x: rnd(0, W), y: rnd(-H * .6, -10), vx: rnd(-1, 1), vy: rnd(1.5, 3.5), r: rnd(0, 6), vr: rnd(-.1, .1),
+      c: hearts ? ["#e0466b", "#ff8fab", "#b8325a", "#ffc2d1"][i % 4] : FW_COLORS[i % 6], heart: hearts && i % 2 === 0 });
+  }
+
+  // ---------- Pop-ups: Geburtstag, Jahrestag, Monatstag, Neujahr ----------
+  function popupFor(n = now()) {
+    const m = n.getMonth(), d = n.getDate(), y = n.getFullYear();
+    if (m === 8 && d === 12) return { key: "bday", icon: "🎂", title: "Alles Liebe zum Geburtstag, kleiner Spatz!",
+      text: "Ich wünsche dir den schönsten Tag. Lass dich heute so richtig feiern. Ich hab dich lieb! ♥", fx: "confetti" };
+    if (m === 11 && d === 6) return { key: "niko", icon: "🎅", title: "Ho ho ho, Amelie!",
+      text: "Warst du dieses Jahr auch schön brav? Oder muss ich Knecht Ruprecht vorbeischicken? 😏 Ich hoffe, deine Stiefel sind geputzt!" };
+    if (m === 1 && d === 14) return { key: "vday", icon: "💘", title: "Happy Valentinstag!",
+      text: "Für die Liebste der Welt: Ich hab dich unendlich lieb. ♥", fx: "hearts" };
+    if (m === 0 && d === 1) return { key: "ny", icon: "🎆", title: `Frohes neues Jahr ${y}!`,
+      text: `Auf ein wunderschönes ${y} mit dir. Ich freu mich auf alles, was wir zusammen erleben.` };
+    if (d === 24 && n > TOGETHER) {
+      const months = (y - TOGETHER.getFullYear()) * 12 + m - TOGETHER.getMonth();
+      if (m === 7) { const yrs = months / 12;
+        return { key: "jt", icon: "🥂", title: "Happy Jahrestag!", text: `Heute sind wir schon ${yrs === 1 ? "1 Jahr" : yrs + " Jahre"} zusammen. Danke für jeden einzelnen Tag mit dir. ♥`, fx: "hearts" }; }
+      const y2 = Math.floor(months / 12), m2 = months % 12;
+      const extra = y2 ? ` (${y2 === 1 ? "1 Jahr" : y2 + " Jahre"}${m2 ? ` und ${m2 === 1 ? "1 Monat" : m2 + " Monate"}` : ""})` : "";
+      return { key: "mt", icon: "💕", title: "Happy Monatstag!", text: `Heute sind wir schon ${months} Monate zusammen${extra}. Schön, dass es dich gibt.`, fx: "hearts" };
+    }
+    return null;
+  }
+  function checkPopup() {
+    const p = popupFor(); if (!p) return;
+    const seenKey = `popup-${p.key}-${ymd(now())}`;
+    if (!simName || simName === "Heute") { if (store.get(seenKey)) return; store.set(seenKey, "1"); }
+    const modal = document.getElementById("modal");
+    modal.innerHTML = `<div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="big" aria-hidden="true">${p.icon}</div><h2 id="modal-title">${p.title}</h2><p class="lead">${p.text}</p>
+      <div class="center"><button class="btn" id="modal-ok">Danke ♥</button></div></div>`;
+    modal.hidden = false; document.getElementById("modal-ok").focus();
+    document.getElementById("modal-ok").onclick = () => modal.hidden = true;
+    if (p.fx) burst(p.fx === "hearts");
+  }
+
+  function applySeason() { document.body.dataset.season = season(); document.body.dataset.snow = snowing() ? "1" : ""; refreshDecor(); }
+
+  // Wechselnde Sprüche unter „Hallo Amelie“
+  const GREETINGS = [
+    "Wie geht es dir heute?", "Kann ich dir heute helfen?", "Schön, dass du da bist", "Was steht heute bei dir an?",
+    "Hast du schon was gegessen?", "Ich hab dich lieb", "Ich denk gerade an dich", "Hast du gut geschlafen?",
+    "Worauf hast du heute Lust?", "Du schaffst das heute", "Schon an Schottland gedacht?", "Lust auf ein Date?",
+    "Gönn dir heute was Schönes", "Du bist die Beste", "Lächeln steht dir übrigens super"
+  ];
+  // Sprüche zu besonderen Tagen und Zeiten (ersetzen dann die normalen Sprüche)
+  const THEMED = {
+    bday: ["Happy Birthday, kleiner Spatz! 🎂", "Alles Gute zum Geburtstag! 🥳", "Heute ist dein Tag! 🎉", "Happy Birthday to you! 🎈"],
+    jt: ["Happy Jahrestag! 🥂", "Heute ist unser Tag ♥", "Auf uns! 🥂"],
+    niko: ["Ho ho ho! Warst du brav? 🎅", "Schon die Stiefel geputzt? 🥾", "Der Nikolaus war da! 🍫"],
+    xmasEve: ["Frohe Weihnachten! 🎄", "Schöne Bescherung! 🎁", "Frohes Fest, mein Schatz ✨", "Stille Nacht, kuschelige Nacht 🕯️"],
+    xmas: ["Frohe Adventszeit! 🕯️", "Schon Plätzchen genascht? 🍪", "Lust auf ein Glühwein-Date? 🍷", "Hast du schon einen Wunschzettel? 📜",
+           "Kerzen an, Kuscheldecke raus 🕯️", "Du stehst ganz oben auf meiner Wunschliste 🎁", "Bald ist Weihnachten! 🎄", "Ho ho ho! 🎅"],
+    nye: ["Guten Rutsch ins neue Jahr! 🥂", "Bereit fürs Feuerwerk? 🎆", "Auf ein neues Jahr mit dir! ✨"],
+    ny: ["Frohes neues Jahr! 🎆", "Prost Neujahr! 🥂", "Neues Jahr, neue Abenteuer mit dir ✨"],
+    fasching: ["Helau! 🎭", "Schon verkleidet? 🤡", "Konfetti-Alarm! 🎉", "Kamelle! 🍬", "Alle Narren aufgepasst! 🥳",
+               "Ich bin ein Pirat, und du? 🏴‍☠️", "Heut' wird geschunkelt! 🎶", "Helau und Alaaf, Hauptsache Party! 🎊"],
+    vday: ["Happy Valentinstag! 💘", "Du bist mein Lieblingsmensch ♥", "Für immer dein Valentin 💌"],
+    easter: ["Frohe Ostern! 🐣", "Schon Eier gesucht? 🥚", "Der Osterhase war da! 🐰"],
+    halloween: ["Buuuh! 👻", "Süßes oder Saures? 🍬", "Heute Nacht ist Geisterstunde 🕯️", "Hast du dich schon gegruselt? 🕷️",
+                "Achtung, hinter dir! … nur Spaß 😈", "Happy Halloween! 🎃"],
+    snow: ["Es schneit! ❄️", "Zeit für eine Schneeballschlacht? ⛄", "Heißer Kakao gefällig? ☕", "Draußen schneit's, drinnen kuscheln 🧣"]
+  };
+  let greeting = pick(GREETINGS);   // ein Spruch pro Besuch
+  function occasion(n = now()) {
+    const m = n.getMonth(), d = n.getDate(), s = season(n), e = easter(n.getFullYear());
+    if (m === 8 && d === 12) return "bday";
+    if (m === 7 && d === 24) return "jt";
+    if (m === 11 && d === 6) return "niko";
+    if (m === 11 && d >= 24 && d <= 26) return "xmasEve";
+    if (s === "nye") return m === 0 ? "ny" : "nye";
+    if (s === "xmas" || s === "fasching" || s === "vday" || s === "halloween") return s;
+    if (n >= e && n < addDays(e, 2)) return "easter";
+    if (snowing()) return "snow";
+    return "";
+  }
+  function pickGreeting() { const o = occasion(); return pick(o ? THEMED[o] : GREETINGS); }
+
+  // ---------- Übersicht ----------
+  function renderHome() {
+    const last = store.get("lastMood"), tg = togetherText(), s = season(), n = now();
+    const ribbon = s === "xmas" ? `${CANE(false)}<span class="e">🎅</span><span>${n.getDate() >= 24 && n.getMonth() === 11 ? "Frohe Weihnachten" : "Frohe Adventszeit"}</span><span class="e">🎅</span>${CANE(true)}`
+      : s === "halloween" ? `<span class="e">🎃</span><span>Happy Halloween</span><span class="e">👻</span>`
+      : s === "fasching" ? `<span class="e">🎭</span><span>Helau!</span><span class="e">🎉</span>`
+      : s === "vday" ? `<span class="e">💘</span><span>Happy Valentinstag</span><span class="e">💘</span>`
+      : s === "nye" ? `<span class="e">🎆</span><span>${n.getMonth() === 0 ? "Frohes neues Jahr" : "Guten Rutsch"}</span><span class="e">🥂</span>` : "";
+    home.innerHTML = `
+      ${s === "xmas" ? `<svg class="garland" viewBox="0 0 320 34" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 6 Q40 30 80 8 T160 8 T240 8 T320 6" fill="none" stroke="#2e5e3e" stroke-width="2"/>
+        ${[20, 52, 84, 116, 148, 180, 212, 244, 276, 304].map((x, i) => `<circle class="bulb" cx="${x}" cy="${[16, 20, 9, 18, 14, 18, 9, 20, 16, 10][i]}" r="5" fill="${["#ff4d4d", "#ffd166", "#4dd2ff", "#7dffb0"][i % 4]}"/>`).join("")}
+      </svg>` : ""}
+      ${ribbon ? `<p class="ribbon">${ribbon}</p>` : ""}
+      <header class="hello">
+        <p class="eyebrow">Hallo Amelie</p>
+        <h1>${greeting}</h1>
+        <p class="together">♥ Zusammen seit ${tg.txt} <span>· ${tg.days} Tage</span></p>
+        <p class="wx-home" id="wx-home" aria-live="polite"></p>
+      </header>
+      ${countdowns().map(c => `
+        <section class="count" aria-labelledby="t-${c.id}">
+          <div class="count-head">
+            <span class="count-icon" aria-hidden="true">${c.icon}</span>
+            <div><h2 id="t-${c.id}">${c.title}</h2><p class="sub">${c.sub}</p></div>
+          </div>
+          <div class="digits" id="d-${c.id}"></div>
+          ${c.weather ? '<p class="weather" id="weather" aria-live="polite"></p>' : ""}
+        </section>`).join("")}
+      <div class="tiles">
+        <button class="tile" id="tile-hunger"><span class="pic" aria-hidden="true">🍽️</span>
+          <strong>Hunger?</strong><span class="sub">Sag mir, worauf du Lust hast</span></button>
+        <button class="tile" id="tile-mood"><span class="pic" aria-hidden="true">${last ? last.split("|")[0] : "🌤️"}</span>
+          <strong>Stimmungs&shy;barometer</strong><span class="sub">${last ? "Zuletzt: " + esc(last.split("|")[1]) : "Wie geht's dir gerade?"}</span></button>
+        <button class="tile wide" id="tile-date"><span class="pic" aria-hidden="true">💡</span>
+          <strong>Date-Idee</strong><span class="sub">Plan unser nächstes Date</span></button>
+      </div>`;
+    document.getElementById("tile-hunger").onclick = () => { step = 0; show("quiz"); renderQuiz(); };
+    document.getElementById("tile-date").onclick = () => { show("date"); renderDate(); };
+    document.getElementById("tile-mood").onclick = () => { mood = null; moodNote = ""; show("mood"); renderMood(); };
+    homeKey = state(); paintWeather(); tick(); decorateSnow();
+  }
+
+  // Wechselt der Modus (z. B. um Mitternacht), wird die Übersicht neu aufgebaut.
+  let homeKey = "";
+  const state = () => season() + countdowns().map(c => c.id).join() + ymd(now());
+  function tick() {
+    if (state() !== homeKey) { applySeason(); greeting = pickGreeting(); renderHome(); checkPopup(); return; }
+    const t = now().getTime();
+    countdowns().forEach(c => {
+      const el = document.getElementById("d-" + c.id); if (!el) return;
+      let s = Math.floor((c.at - t) / 1000);
+      if (s <= 0) { el.innerHTML = `<p class="done">${c.done || "Es ist so weit! 🎉"}</p>`; return; }
+      const parts = [[Math.floor(s / 86400), "Tage"], [Math.floor(s % 86400 / 3600), "Std"], [Math.floor(s % 3600 / 60), "Min"], [s % 60, "Sek"]];
+      el.innerHTML = parts.map(([n, l]) => `<div class="unit"><span class="num">${String(n).padStart(2, "0")}</span><span class="lbl">${l}</span></div>`).join("");
+    });
+  }
+  setInterval(() => { if (!home.hidden) tick(); }, 1000);
+
+  // ---------- Stimmungsbarometer ----------
+  function renderMood() {
+    card.innerHTML = `
+      ${backHome}
+      <h2>Wie geht es dir gerade?</h2>
+      <div class="moods">${MOODS.map(([e, t], i) =>
+        `<button class="opt mood${mood === i ? " picked" : ""}" data-i="${i}" id="mood-${i}"><span class="pic" aria-hidden="true">${e}</span><span>${t}</span></button>`).join("")}</div>
+      <label class="field" for="mood-note">Magst du mir mehr erzählen? (freiwillig)
+        <textarea id="mood-note" rows="3" placeholder="Was ist los?">${esc(moodNote)}</textarea></label>
+      <div class="row"><span></span><button class="btn" id="mood-send" ${mood === null ? "disabled" : ""}>Stimmung senden</button></div>`;
+    document.getElementById("home-btn").onclick = () => show("home");
+    card.querySelectorAll(".mood").forEach(b => b.onclick = () => {
+      mood = +b.dataset.i;
+      card.querySelectorAll(".mood").forEach(o => o.classList.toggle("picked", o === b));
+      document.getElementById("mood-send").disabled = false;
+    });
+    document.getElementById("mood-note").oninput = e => moodNote = e.target.value;
+    document.getElementById("mood-send").onclick = sendMood;
+  }
+
+  async function sendMood() {
+    const [e, t] = MOODS[mood];
+    card.innerHTML = `<div class="big" aria-hidden="true">${e}</div><h2>Wird verschickt …</h2>`;
+    const when = new Date().toLocaleString("de-DE", { dateStyle: "medium", timeStyle: "short" });
+    const ok = await sendMail(`Amelies Stimmung: ${e} ${t}`,
+      `Amelie fühlt sich gerade: ${e} ${t}\nZeit: ${when}\n\nNachricht: ${moodNote.trim() || "keine"}`);
+    if (ok) {
+      store.set("lastMood", `${e}|${t}`);
+      card.innerHTML = `<div class="big" aria-hidden="true">${e}</div><h2>Danke!</h2>
+        <p class="lead">Jan weiß jetzt, wie es dir geht.</p>
+        ${demo ? `<p class="note">Vorschau, hier wird nichts verschickt. Betreff der Mail: „Amelies Stimmung: ${e} ${t}“</p>` : ""}
+        <div class="center"><button class="btn" id="home-btn">Zur Übersicht</button></div>`;
+      document.getElementById("home-btn").onclick = () => show("home");
+    } else failed(sendMood);
+  }
+
+  function failed(retry) {
+    card.innerHTML = `<h2>Das hat nicht geklappt</h2>
+      <p class="lead">Es konnte nichts verschickt werden. Prüf kurz deine Internetverbindung und versuch es nochmal.</p>
+      <div class="center"><button class="btn" id="retry">Nochmal senden</button></div>`;
+    document.getElementById("retry").onclick = retry;
+  }
+
+  // ---------- Hunger-Quiz ----------
   function hearts() {
     return '<div class="hearts" aria-hidden="true">' +
       QUESTIONS.map((_, i) => `<span class="${i <= step ? "on" : ""}">♥</span>`).join("") + "</div>";
@@ -177,17 +981,8 @@
       .sort((x, y) => score[y] - score[x]).map(k => ({ name: DISHES[k][0], img: DISHES[k][1], score: score[k] }));
   }
 
-  function render() {
-    card.classList.remove("fade"); void card.offsetWidth; card.classList.add("fade");
-    if (step === -1) {
-      card.innerHTML = `
-        <div class="big" aria-hidden="true">🍽️</div>
-        <h1>Hallo Amelie</h1>
-        <p class="lead">Was wollen wir essen? Beantworte mir ${QUESTIONS.length} kurze Fragen, dann weiß ich Bescheid.</p>
-        <div class="center"><button class="btn" id="start">Los geht's</button></div>`;
-      document.getElementById("start").onclick = () => { step = 0; render(); };
-      return;
-    }
+  function renderQuiz() {
+    fade(card);
     const item = QUESTIONS[step], last = step === QUESTIONS.length - 1;
     const ready = () => item.multi || item.kind === "text" || answers[step].length > 0 || notes[step].trim() !== "";
     const field = (label, ph) => `<label class="field" for="note-${step}">${label}
@@ -203,7 +998,7 @@
       ${item.note ? field(item.note, item.placeholder) : ""}
       ${item.kind === "text" ? field("", item.placeholder) : ""}
       <div class="row">
-        <button class="link" id="back">${step > 0 ? "← Zurück" : ""}</button>
+        <button class="link" id="back">${step > 0 ? "← Zurück" : "← Übersicht"}</button>
         <button class="btn" id="next" ${ready() ? "" : "disabled"}>${last ? "Abschicken" : "Weiter"}</button>
       </div>`;
     card.querySelectorAll(".opt").forEach(b => b.onclick = () => {
@@ -219,11 +1014,11 @@
     });
     const ta = card.querySelector("textarea");
     if (ta) ta.oninput = () => { notes[step] = ta.value; document.getElementById("next").disabled = !ready(); };
-    document.getElementById("back").onclick = () => { if (step > 0) { step--; render(); } };
-    document.getElementById("next").onclick = () => { last ? send() : (step++, render()); };
+    document.getElementById("back").onclick = () => { if (step > 0) { step--; renderQuiz(); } else show("home"); };
+    document.getElementById("next").onclick = () => { last ? sendQuiz() : (step++, renderQuiz()); };
   }
 
-  async function send() {
+  async function sendQuiz() {
     card.innerHTML = `<div class="big" aria-hidden="true">💌</div><h2>Wird verschickt …</h2>`;
     // Top 3 plus alle, die punktgleich mit Platz 3 sind. Gleiche Punkte = gleicher Platz.
     const all = ranking(), cut = all.length > 3 ? all[2].score : -Infinity;
@@ -238,30 +1033,33 @@
         const i = QUESTIONS.indexOf(x);
         return `${x.q}\n→ ${answers[i].map(j => x.a[j][0]).join(", ") || "nichts ausgewählt"}`;
       }).join("\n\n");
-    let ok = false, demo = ACCESS_KEY === "DEIN_ACCESS_KEY";
-    if (!demo) {
-      try {
-        const r = await fetch("https://api.web3forms.com/submit", {
-          method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify({ access_key: ACCESS_KEY, subject: "Amelies Favoriten: " + top.map(d => d.name).join(", "),
-            from_name: "amelie.meixner.club", message: text })
-        });
-        ok = (await r.json()).success;
-      } catch (e) { ok = false; }
-    }
-    if (ok || demo) {
+    const ok = await sendMail("Amelies Favoriten: " + top.map(d => d.name).join(", "), text);
+    if (ok) {
       card.innerHTML = `<div class="big" aria-hidden="true">♥</div><h1>Danke, Amelie!</h1>
         <p class="lead">Jan weiß jetzt, worauf du Hunger hast. Lass dich überraschen.</p>` +
-        (demo ? `<p class="note">Vorschau, hier wird nichts verschickt. In der Mail an Jan stünde:<br><strong>${top.map(d => `${d.place}. ${d.img} ${d.name}`).join(" · ")}</strong><br>Nachtisch: ${esc(dessert)}</p>` : "");
-    } else {
-      card.innerHTML = `<h2>Das hat nicht geklappt</h2>
-        <p class="lead">Die Antworten konnten nicht verschickt werden. Prüf kurz deine Internetverbindung und versuch es nochmal.</p>
-        <div class="center"><button class="btn" id="retry">Nochmal senden</button></div>`;
-      document.getElementById("retry").onclick = send;
-    }
+        (demo ? `<p class="note">Vorschau, hier wird nichts verschickt. In der Mail an Jan stünde:<br><strong>${top.map(d => `${d.place}. ${d.img} ${d.name}`).join(" · ")}</strong><br>Nachtisch: ${esc(dessert)}</p>` : "") +
+        `<div class="center"><button class="btn" id="home-btn">Zur Übersicht</button></div>`;
+      answers.forEach(a => a.length = 0); notes.fill("");
+      document.getElementById("home-btn").onclick = () => show("home");
+    } else failed(sendQuiz);
   }
 
-  render();
+  applySeason(); greeting = pickGreeting();
+  if (demo) {   // Vorschau-Leiste zum Ausprobieren der Modi
+    const bar = document.getElementById("sim");
+    bar.hidden = false;
+    bar.innerHTML = `<p class="section-label">Vorschau: Zeitpunkt simulieren</p><div class="chips">${Object.keys(SIMULATE).map(k =>
+      `<button type="button" class="chip${k === simName ? " picked" : ""}" data-k="${k}">${k}</button>`).join("")}</div>`;
+    bar.onclick = e => {
+      const k = e.target.dataset && e.target.dataset.k; if (!k) return;
+      popupChecked = true; forceSnow = /Schnee/.test(k) ? true : null; simName = k; offset = SIMULATE[k] ? new Date(SIMULATE[k]) - Date.now() : 0;
+      bar.querySelectorAll(".chip").forEach(c => c.classList.toggle("picked", c.dataset.k === k));
+      applySeason(); greeting = pickGreeting(); show("home"); checkPopup();
+    };
+  }
+  const unlockedAt = +store.get("unlocked") || 0;
+  if (Date.now() - unlockedAt < UNLOCK_HOURS * 36e5) show("home"); else { show("gate"); renderGate(); }
 </script>
+
 </body>
 </html>
