@@ -69,47 +69,39 @@
 
   // Die Gerichte, aus denen am Ende die Top 3 ermittelt werden.
   const DISHES = {
-    pizza: "Pizza", pasta: "Pasta", sushi: "Sushi", burger: "Burger", thai: "Thai-Curry",
-    indisch: "Indisch", mex: "Mexikanisch", griech: "Griechisch", steak: "Steak", bowl: "Bowl oder Salat"
+    pizza: "Pizza", pasta: "Pasta", sushi: "Sushi", burger: "Veggie-Burger", wok: "Wok-Nudeln",
+    griech: "Griechisch", mex: "Mexikanisch", fisch: "Fisch, z. B. Lachs", bowl: "Bowl oder Salat", flamm: "Flammkuchen"
   };
 
   // Jede Antwort gibt den genannten Gerichten Punkte. multi: mehrere Antworten möglich.
   const QUESTIONS = [
     { q: "Worauf hast du gerade am meisten Lust?", a: [
-      ["Etwas Deftiges", { burger: 2, steak: 2, griech: 1, pizza: 1 }],
-      ["Etwas Leichtes und Frisches", { sushi: 2, bowl: 2, griech: 1 }],
-      ["Etwas Würziges", { indisch: 2, thai: 2, mex: 2 }],
-      ["Etwas Gemütliches", { pasta: 2, pizza: 2 }] ] },
-    { q: "Wie scharf darf es sein?", a: [
-      ["Gar nicht", { pasta: 1, pizza: 1, sushi: 1, burger: 1, steak: 1, indisch: -1, thai: -1, mex: -1 }],
-      ["Ein bisschen", { mex: 1, griech: 1, thai: 1 }],
-      ["Richtig scharf", { indisch: 2, thai: 2, mex: 2 }] ] },
-    { q: "Fleisch, Fisch oder vegetarisch?", a: [
-      ["Fleisch", { steak: 2, burger: 2, griech: 1, mex: 1 }],
-      ["Fisch", { sushi: 3 }],
-      ["Vegetarisch", { pasta: 1, pizza: 1, bowl: 2, indisch: 1, steak: -3 }],
+      ["Etwas Deftiges", { burger: 2, pizza: 1, flamm: 1, mex: 1 }],
+      ["Etwas Leichtes und Frisches", { sushi: 2, bowl: 2, griech: 1, fisch: 1 }],
+      ["Etwas Gemütliches", { pasta: 2, pizza: 2, flamm: 1 }],
+      ["Etwas Exotisches", { sushi: 1, wok: 2, mex: 2 }] ] },
+    { q: "Was soll die Hauptrolle spielen?", a: [
+      ["Fisch", { fisch: 3, sushi: 2 }],
+      ["Käse", { pizza: 2, pasta: 1, griech: 2, flamm: 2 }],
+      ["Gemüse", { bowl: 2, wok: 1, griech: 1, mex: 1 }],
+      ["Tofu oder Falafel", { bowl: 1, wok: 2, griech: 1, burger: 1 }],
       ["Ist mir egal", {}] ] },
-    { q: "Wo möchtest du am liebsten essen?", a: [
-      ["Schick ausgehen", { steak: 2, sushi: 1, pasta: 1 }],
-      ["Gemütlich im Restaurant", { griech: 2, indisch: 1, thai: 1, mex: 1 }],
-      ["Auf der Couch bestellen", { pizza: 2, burger: 1, sushi: 1 }],
-      ["Zusammen selbst kochen", { pasta: 2, bowl: 1, mex: 1 }] ] },
     { q: "Welche Beilage gewinnt?", a: [
-      ["Pommes", { burger: 2, steak: 1 }],
-      ["Reis", { thai: 2, indisch: 1, sushi: 1 }],
-      ["Brot", { griech: 2, indisch: 1, pizza: 1 }],
-      ["Nudeln", { pasta: 3 }] ] },
+      ["Pommes", { burger: 2, fisch: 1 }],
+      ["Reis", { sushi: 2, wok: 1, mex: 1, fisch: 1 }],
+      ["Brot", { griech: 2, flamm: 1, pizza: 1 }],
+      ["Nudeln", { pasta: 3, wok: 2 }] ] },
     { q: "Wie groß ist dein Hunger?", a: [
-      ["Nur ein kleiner Hunger", { sushi: 1, bowl: 2 }],
-      ["Normaler Hunger", { pasta: 1, thai: 1, griech: 1 }],
-      ["Riesenhunger", { burger: 2, steak: 1, pizza: 1, mex: 1 }] ] },
+      ["Nur ein kleiner Hunger", { sushi: 1, bowl: 2, flamm: 1 }],
+      ["Normaler Hunger", { pasta: 1, wok: 1, griech: 1, fisch: 1 }],
+      ["Riesenhunger", { burger: 2, pizza: 2, mex: 1 }] ] },
     { q: "In welchem Land würdest du heute gern essen?", a: [
       ["Italien", { pizza: 2, pasta: 2 }],
-      ["Japan oder Thailand", { sushi: 2, thai: 2 }],
+      ["Japan oder China", { sushi: 2, wok: 2 }],
       ["Griechenland", { griech: 3 }],
       ["Mexiko", { mex: 3 }],
-      ["Indien", { indisch: 3 }],
-      ["USA", { burger: 2, steak: 2 }] ] },
+      ["Frankreich", { flamm: 2, fisch: 1 }],
+      ["USA", { burger: 3 }] ] },
     { q: "Gibt es etwas, das du heute auf keinen Fall willst?", multi: true,
       a: Object.entries(DISHES).map(([k, name]) => [name, { [k]: -100 }]) }
   ];
