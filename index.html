@@ -36,10 +36,17 @@
   h1 { font-size: clamp(1.9rem, 7vw, 2.5rem); line-height: 1.15; }
   h2 { font-size: clamp(1.4rem, 5vw, 1.75rem); line-height: 1.25; }
   p.lead { text-align: center; color: var(--muted); line-height: 1.6; margin: -8px 0 28px; }
-  .options { display: grid; gap: 10px; }
-  .opt { font: inherit; text-align: left; padding: 14px 18px; border-radius: 14px; cursor: pointer;
-    border: 1.5px solid var(--line); background: transparent; color: var(--fg);
+  .options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .opt { font: inherit; text-align: center; padding: 14px 10px; border-radius: 16px; cursor: pointer;
+    border: 1.5px solid var(--line); background: transparent; color: var(--fg); line-height: 1.3;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-width: 0;
     transition: border-color .2s, background .2s, transform .15s; }
+  .pic { font-size: 34px; line-height: 1; transition: transform .2s; }
+  .opt.picked .pic { transform: scale(1.12); }
+  .field { display: grid; gap: 8px; margin-top: 18px; color: var(--muted); font-size: 14px; }
+  .field textarea { font: inherit; font-size: 16px; color: var(--fg); background: transparent; resize: vertical;
+    border: 1.5px solid var(--line); border-radius: 14px; padding: 12px 14px; width: 100%; }
+  .field textarea:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-color: var(--accent); }
   .opt:hover { border-color: var(--accent); }
   .opt:active { transform: scale(.98); }
   .opt.picked { background: var(--accent-soft); border-color: var(--accent); font-weight: 700; }
@@ -67,48 +74,58 @@
   // Mail-Versand über Web3Forms. Den Schlüssel bekommst du kostenlos auf web3forms.com.
   const ACCESS_KEY = "90dcfece-f54e-4203-861b-e7a430412afc";
 
-  // Die Gerichte, aus denen am Ende die Top 3 ermittelt werden.
+  // Die Gerichte, aus denen am Ende die Favoriten ermittelt werden: [Name, Bild]
   const DISHES = {
-    pizza: "Pizza", pasta: "Pasta", sushi: "Sushi", burger: "Veggie-Burger", wok: "Wok-Nudeln",
-    griech: "Griechisch", mex: "Mexikanisch", fisch: "Fisch, z. B. Lachs", bowl: "Bowl oder Salat", flamm: "Flammkuchen"
+    pizza: ["Pizza", "🍕"], pasta: ["Pasta", "🍝"], sushi: ["Sushi", "🍣"], burger: ["Veggie-Burger", "🍔"],
+    wok: ["Wok-Nudeln", "🥡"], griech: ["Griechisch", "🫒"], mex: ["Mexikanisch", "🌮"],
+    fisch: ["Fisch (z. B. Lachs)", "🐟"], bowl: ["Bowl oder Salat", "🥗"], flamm: ["Flammkuchen", "🫓"]
   };
 
-  // Jede Antwort gibt den genannten Gerichten Punkte. multi: mehrere Antworten möglich.
+  // Antworten: [Text, Bild, Punkte für Gerichte]. multi: mehrere Antworten möglich.
+  // kind "dessert": zählt nicht für die Gerichte, mit optionalem eigenen Wunsch. kind "text": nur Freitext.
   const QUESTIONS = [
     { q: "Worauf hast du gerade am meisten Lust?", a: [
-      ["Etwas Deftiges", { burger: 2, pizza: 1, flamm: 1, mex: 1 }],
-      ["Etwas Leichtes und Frisches", { sushi: 2, bowl: 2, griech: 1, fisch: 1 }],
-      ["Etwas Gemütliches", { pasta: 2, pizza: 2, flamm: 1 }],
-      ["Etwas Exotisches", { sushi: 1, wok: 2, mex: 2 }] ] },
+      ["Etwas Deftiges", "🥨", { burger: 2, pizza: 1, flamm: 1, mex: 1 }],
+      ["Etwas Leichtes und Frisches", "🥒", { sushi: 2, bowl: 2, griech: 1, fisch: 1 }],
+      ["Etwas Gemütliches", "🛋️", { pasta: 2, pizza: 2, flamm: 1 }],
+      ["Etwas Exotisches", "🌴", { sushi: 1, wok: 2, mex: 2 }] ] },
     { q: "Was soll die Hauptrolle spielen?", a: [
-      ["Fisch", { fisch: 3, sushi: 2 }],
-      ["Käse", { pizza: 2, pasta: 1, griech: 2, flamm: 2 }],
-      ["Gemüse", { bowl: 2, wok: 1, griech: 1, mex: 1 }],
-      ["Tofu oder Falafel", { bowl: 1, wok: 2, griech: 1, burger: 1 }],
-      ["Ist mir egal", {}] ] },
+      ["Fisch", "🐟", { fisch: 3, sushi: 2 }],
+      ["Käse", "🧀", { pizza: 2, pasta: 1, griech: 2, flamm: 2 }],
+      ["Gemüse", "🥦", { bowl: 2, wok: 1, griech: 1, mex: 1 }],
+      ["Tofu oder Falafel", "🧆", { bowl: 1, wok: 2, griech: 1, burger: 1 }],
+      ["Ist mir egal", "🤷‍♀️", {}] ] },
     { q: "Welche Beilage gewinnt?", a: [
-      ["Pommes", { burger: 2, fisch: 1 }],
-      ["Reis", { sushi: 2, wok: 1, mex: 1, fisch: 1 }],
-      ["Brot", { griech: 2, flamm: 1, pizza: 1 }],
-      ["Nudeln", { pasta: 3, wok: 2 }] ] },
+      ["Pommes", "🍟", { burger: 2, fisch: 1 }],
+      ["Reis", "🍚", { sushi: 2, wok: 1, mex: 1, fisch: 1 }],
+      ["Brot", "🥖", { griech: 2, flamm: 1, pizza: 1 }],
+      ["Nudeln", "🍜", { pasta: 3, wok: 2 }] ] },
     { q: "Wie groß ist dein Hunger?", a: [
-      ["Nur ein kleiner Hunger", { sushi: 1, bowl: 2, flamm: 1 }],
-      ["Normaler Hunger", { pasta: 1, wok: 1, griech: 1, fisch: 1 }],
-      ["Riesenhunger", { burger: 2, pizza: 2, mex: 1 }] ] },
+      ["Nur ein kleiner Hunger", "🤏", { sushi: 1, bowl: 2, flamm: 1 }],
+      ["Normaler Hunger", "🙂", { pasta: 1, wok: 1, griech: 1, fisch: 1 }],
+      ["Riesenhunger", "🤤", { burger: 2, pizza: 2, mex: 1 }] ] },
     { q: "In welchem Land würdest du heute gern essen?", a: [
-      ["Italien", { pizza: 2, pasta: 2 }],
-      ["Japan oder China", { sushi: 2, wok: 2 }],
-      ["Griechenland", { griech: 3 }],
-      ["Mexiko", { mex: 3 }],
-      ["Frankreich", { flamm: 2, fisch: 1 }],
-      ["USA", { burger: 3 }] ] },
+      ["Italien", "🇮🇹", { pizza: 2, pasta: 2 }],
+      ["Japan oder China", "🏮", { sushi: 2, wok: 2 }],
+      ["Griechenland", "🇬🇷", { griech: 3 }],
+      ["Mexiko", "🇲🇽", { mex: 3 }],
+      ["Frankreich", "🇫🇷", { flamm: 2, fisch: 1 }],
+      ["USA", "🇺🇸", { burger: 3 }] ] },
     { q: "Gibt es etwas, das du heute auf keinen Fall willst?", multi: true,
-      a: Object.entries(DISHES).map(([k, name]) => [name, { [k]: -100 }]) }
+      hint: "Tipp alles an, was heute nicht geht. Wenn alles okay ist, einfach weiter.",
+      a: Object.entries(DISHES).map(([k, [name, img]]) => [name, img, { [k]: -100 }]) },
+    { q: "Und zum Nachtisch?", kind: "dessert", a: [
+      ["Eis", "🍨"], ["Kuchen", "🍰"], ["Schokolade", "🍫"], ["Obst", "🍓"], ["Crêpes", "🥞"], ["Kein Nachtisch", "🙅‍♀️"] ],
+      note: "Oder hast du einen ganz bestimmten Nachtisch-Wunsch?", placeholder: "z. B. Tiramisu" },
+    { q: "Hast du sonst noch einen besonderen Wunsch?", kind: "text", img: "💌",
+      hint: "Ganz egal was, ich lese alles. Du kannst das Feld auch leer lassen.", placeholder: "Dein Wunsch …" }
   ];
 
   const card = document.getElementById("card");
   const answers = QUESTIONS.map(() => []);   // gewählte Antwort-Indizes je Frage
+  const notes = QUESTIONS.map(() => "");     // Freitext je Frage
   let step = -1;
+  const esc = s => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
   function hearts() {
     return '<div class="hearts" aria-hidden="true">' +
@@ -117,18 +134,18 @@
 
   function ranking() {
     const score = Object.fromEntries(Object.keys(DISHES).map(k => [k, 0]));
-    QUESTIONS.forEach((item, i) => answers[i].forEach(j => {
-      for (const [k, p] of Object.entries(item.a[j][1])) score[k] += p;
+    QUESTIONS.forEach((item, i) => item.kind || answers[i].forEach(j => {
+      for (const [k, p] of Object.entries(item.a[j][2])) score[k] += p;
     }));
     return Object.keys(DISHES).filter(k => score[k] > -50)
-      .sort((x, y) => score[y] - score[x]).map(k => ({ name: DISHES[k], score: score[k] }));
+      .sort((x, y) => score[y] - score[x]).map(k => ({ name: DISHES[k][0], img: DISHES[k][1], score: score[k] }));
   }
 
   function render() {
     card.classList.remove("fade"); void card.offsetWidth; card.classList.add("fade");
     if (step === -1) {
       card.innerHTML = `
-        <div class="big" aria-hidden="true">♥</div>
+        <div class="big" aria-hidden="true">🍽️</div>
         <h1>Hallo Amelie</h1>
         <p class="lead">Was wollen wir essen? Beantworte mir ${QUESTIONS.length} kurze Fragen, dann weiß ich Bescheid.</p>
         <div class="center"><button class="btn" id="start">Los geht's</button></div>`;
@@ -136,13 +153,19 @@
       return;
     }
     const item = QUESTIONS[step], last = step === QUESTIONS.length - 1;
-    const ready = () => item.multi || answers[step].length > 0;
+    const ready = () => item.multi || item.kind === "text" || answers[step].length > 0 || notes[step].trim() !== "";
+    const field = (label, ph) => `<label class="field" for="note-${step}">${label}
+        <textarea id="note-${step}" rows="${item.kind === "text" ? 4 : 2}" placeholder="${ph}">${esc(notes[step])}</textarea></label>`;
     card.innerHTML = hearts() + `
       <p class="eyebrow">Frage ${step + 1} von ${QUESTIONS.length}</p>
+      ${item.img ? `<div class="big" aria-hidden="true">${item.img}</div>` : ""}
       <h2>${item.q}</h2>
-      ${item.multi ? '<p class="lead">Tipp alles an, was heute nicht geht. Wenn alles okay ist, einfach weiter.</p>' : ""}
-      <div class="options">${item.a.map(([t], i) =>
-        `<button class="opt${answers[step].includes(i) ? " picked" : ""}" data-i="${i}" id="opt-${step}-${i}">${t}</button>`).join("")}</div>
+      ${item.hint ? `<p class="lead">${item.hint}</p>` : ""}
+      ${item.a ? `<div class="options">${item.a.map(([t, img], i) =>
+        `<button class="opt${answers[step].includes(i) ? " picked" : ""}" data-i="${i}" id="opt-${step}-${i}">
+          <span class="pic" aria-hidden="true">${img}</span><span>${t}</span></button>`).join("")}</div>` : ""}
+      ${item.note ? field(item.note, item.placeholder) : ""}
+      ${item.kind === "text" ? field("", item.placeholder) : ""}
       <div class="row">
         <button class="link" id="back">${step > 0 ? "← Zurück" : ""}</button>
         <button class="btn" id="next" ${ready() ? "" : "disabled"}>${last ? "Abschicken" : "Weiter"}</button>
@@ -158,18 +181,27 @@
       }
       document.getElementById("next").disabled = !ready();
     });
+    const ta = card.querySelector("textarea");
+    if (ta) ta.oninput = () => { notes[step] = ta.value; document.getElementById("next").disabled = !ready(); };
     document.getElementById("back").onclick = () => { if (step > 0) { step--; render(); } };
     document.getElementById("next").onclick = () => { last ? send() : (step++, render()); };
   }
 
   async function send() {
-    card.innerHTML = `<div class="big" aria-hidden="true">♥</div><h2>Wird verschickt …</h2>`;
+    card.innerHTML = `<div class="big" aria-hidden="true">💌</div><h2>Wird verschickt …</h2>`;
     // Top 3 plus alle, die punktgleich mit Platz 3 sind. Gleiche Punkte = gleicher Platz.
     const all = ranking(), cut = all.length > 3 ? all[2].score : -Infinity;
     const top = all.filter(d => d.score >= cut).map(d => ({ ...d, place: all.findIndex(x => x.score === d.score) + 1 }));
-    const text = "Amelies Favoriten:\n" + top.map(d => `${d.place}. ${d.name} (${d.score} Punkte)`).join("\n") +
-      "\n\nIhre Antworten:\n\n" + QUESTIONS.map((x, i) =>
-        `${x.q}\n→ ${answers[i].map(j => x.a[j][0]).join(", ") || "nichts ausgewählt"}`).join("\n\n");
+    const di = QUESTIONS.findIndex(x => x.kind === "dessert"), ti = QUESTIONS.findIndex(x => x.kind === "text");
+    const dessert = [answers[di].map(j => QUESTIONS[di].a[j][0]).join(", "), notes[di].trim() && `Wunsch: ${notes[di].trim()}`]
+      .filter(Boolean).join(" · ") || "keine Angabe";
+    const text = "Amelies Favoriten:\n" + top.map(d => `${d.place}. ${d.img} ${d.name} (${d.score} Punkte)`).join("\n") +
+      `\n\nNachtisch: ${dessert}` +
+      `\n\nBesonderer Wunsch: ${notes[ti].trim() || "keiner"}` +
+      "\n\nIhre Antworten:\n\n" + QUESTIONS.filter(x => !x.kind).map(x => {
+        const i = QUESTIONS.indexOf(x);
+        return `${x.q}\n→ ${answers[i].map(j => x.a[j][0]).join(", ") || "nichts ausgewählt"}`;
+      }).join("\n\n");
     let ok = false, demo = ACCESS_KEY === "DEIN_ACCESS_KEY";
     if (!demo) {
       try {
@@ -184,7 +216,7 @@
     if (ok || demo) {
       card.innerHTML = `<div class="big" aria-hidden="true">♥</div><h1>Danke, Amelie!</h1>
         <p class="lead">Jan weiß jetzt, worauf du Hunger hast. Lass dich überraschen.</p>` +
-        (demo ? `<p class="note">Vorschau, hier wird nichts verschickt. In der Mail an Jan stünde:<br><strong>${top.map(d => `${d.place}. ${d.name}`).join(" · ")}</strong></p>` : "");
+        (demo ? `<p class="note">Vorschau, hier wird nichts verschickt. In der Mail an Jan stünde:<br><strong>${top.map(d => `${d.place}. ${d.img} ${d.name}`).join(" · ")}</strong><br>Nachtisch: ${esc(dessert)}</p>` : "");
     } else {
       card.innerHTML = `<h2>Das hat nicht geklappt</h2>
         <p class="lead">Die Antworten konnten nicht verschickt werden. Prüf kurz deine Internetverbindung und versuch es nochmal.</p>
