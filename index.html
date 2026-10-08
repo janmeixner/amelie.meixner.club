@@ -67,21 +67,69 @@
   // Mail-Versand über Web3Forms. Den Schlüssel bekommst du kostenlos auf web3forms.com.
   const ACCESS_KEY = "90dcfece-f54e-4203-861b-e7a430412afc";
 
+  // Die Gerichte, aus denen am Ende die Top 3 ermittelt werden.
+  const DISHES = {
+    pizza: "Pizza", pasta: "Pasta", sushi: "Sushi", burger: "Burger", thai: "Thai-Curry",
+    indisch: "Indisch", mex: "Mexikanisch", griech: "Griechisch", steak: "Steak", bowl: "Bowl oder Salat"
+  };
+
+  // Jede Antwort gibt den genannten Gerichten Punkte. multi: mehrere Antworten möglich.
   const QUESTIONS = [
-    { q: "Wie sieht unser perfekter Abend aus?", a: ["Zusammen kochen", "Schick essen gehen", "Couch, Decke, Film", "Spaziergang im Dunkeln"] },
-    { q: "Wohin soll unsere nächste Reise gehen?", a: ["Strand und Meer", "Berge", "Eine fremde Stadt", "Überrasch mich"] },
-    { q: "Wer kocht eigentlich besser?", a: ["Ich", "Du", "Beide gleich gut", "Wir bestellen lieber"] },
-    { q: "Was war dein liebster Moment mit mir?", a: ["Unser erstes Date", "Ein gemeinsamer Urlaub", "Ein ganz normaler Abend", "Der kommt noch"] },
-    { q: "Wie würdest du uns in einem Wort beschreiben?", a: ["Chaotisch", "Gemütlich", "Abenteuerlustig", "Perfekt"] }
+    { q: "Worauf hast du gerade am meisten Lust?", a: [
+      ["Etwas Deftiges", { burger: 2, steak: 2, griech: 1, pizza: 1 }],
+      ["Etwas Leichtes und Frisches", { sushi: 2, bowl: 2, griech: 1 }],
+      ["Etwas Würziges", { indisch: 2, thai: 2, mex: 2 }],
+      ["Etwas Gemütliches", { pasta: 2, pizza: 2 }] ] },
+    { q: "Wie scharf darf es sein?", a: [
+      ["Gar nicht", { pasta: 1, pizza: 1, sushi: 1, burger: 1, steak: 1, indisch: -1, thai: -1, mex: -1 }],
+      ["Ein bisschen", { mex: 1, griech: 1, thai: 1 }],
+      ["Richtig scharf", { indisch: 2, thai: 2, mex: 2 }] ] },
+    { q: "Fleisch, Fisch oder vegetarisch?", a: [
+      ["Fleisch", { steak: 2, burger: 2, griech: 1, mex: 1 }],
+      ["Fisch", { sushi: 3 }],
+      ["Vegetarisch", { pasta: 1, pizza: 1, bowl: 2, indisch: 1, steak: -3 }],
+      ["Ist mir egal", {}] ] },
+    { q: "Wo möchtest du am liebsten essen?", a: [
+      ["Schick ausgehen", { steak: 2, sushi: 1, pasta: 1 }],
+      ["Gemütlich im Restaurant", { griech: 2, indisch: 1, thai: 1, mex: 1 }],
+      ["Auf der Couch bestellen", { pizza: 2, burger: 1, sushi: 1 }],
+      ["Zusammen selbst kochen", { pasta: 2, bowl: 1, mex: 1 }] ] },
+    { q: "Welche Beilage gewinnt?", a: [
+      ["Pommes", { burger: 2, steak: 1 }],
+      ["Reis", { thai: 2, indisch: 1, sushi: 1 }],
+      ["Brot", { griech: 2, indisch: 1, pizza: 1 }],
+      ["Nudeln", { pasta: 3 }] ] },
+    { q: "Wie groß ist dein Hunger?", a: [
+      ["Nur ein kleiner Hunger", { sushi: 1, bowl: 2 }],
+      ["Normaler Hunger", { pasta: 1, thai: 1, griech: 1 }],
+      ["Riesenhunger", { burger: 2, steak: 1, pizza: 1, mex: 1 }] ] },
+    { q: "In welchem Land würdest du heute gern essen?", a: [
+      ["Italien", { pizza: 2, pasta: 2 }],
+      ["Japan oder Thailand", { sushi: 2, thai: 2 }],
+      ["Griechenland", { griech: 3 }],
+      ["Mexiko", { mex: 3 }],
+      ["Indien", { indisch: 3 }],
+      ["USA", { burger: 2, steak: 2 }] ] },
+    { q: "Gibt es etwas, das du heute auf keinen Fall willst?", multi: true,
+      a: Object.entries(DISHES).map(([k, name]) => [name, { [k]: -100 }]) }
   ];
 
   const card = document.getElementById("card");
-  const answers = [];
+  const answers = QUESTIONS.map(() => []);   // gewählte Antwort-Indizes je Frage
   let step = -1;
 
   function hearts() {
     return '<div class="hearts" aria-hidden="true">' +
       QUESTIONS.map((_, i) => `<span class="${i <= step ? "on" : ""}">♥</span>`).join("") + "</div>";
+  }
+
+  function ranking() {
+    const score = Object.fromEntries(Object.keys(DISHES).map(k => [k, 0]));
+    QUESTIONS.forEach((item, i) => answers[i].forEach(j => {
+      for (const [k, p] of Object.entries(item.a[j][1])) score[k] += p;
+    }));
+    return Object.keys(DISHES).filter(k => score[k] > -50)
+      .sort((x, y) => score[y] - score[x]).map(k => ({ name: DISHES[k], score: score[k] }));
   }
 
   function render() {
@@ -90,50 +138,59 @@
       card.innerHTML = `
         <div class="big" aria-hidden="true">♥</div>
         <h1>Hallo Amelie</h1>
-        <p class="lead">Ich habe ${QUESTIONS.length} kleine Fragen an dich. Tipp einfach an, was am besten passt.</p>
+        <p class="lead">Was wollen wir essen? Beantworte mir ${QUESTIONS.length} kurze Fragen, dann weiß ich Bescheid.</p>
         <div class="center"><button class="btn" id="start">Los geht's</button></div>`;
       document.getElementById("start").onclick = () => { step = 0; render(); };
       return;
     }
-    if (step < QUESTIONS.length) {
-      const item = QUESTIONS[step];
-      card.innerHTML = hearts() + `
-        <p class="eyebrow">Frage ${step + 1} von ${QUESTIONS.length}</p>
-        <h2>${item.q}</h2>
-        <div class="options">${item.a.map((t, i) =>
-          `<button class="opt${answers[step] === t ? " picked" : ""}" data-i="${i}" id="opt-${step}-${i}">${t}</button>`).join("")}</div>
-        <div class="row">
-          <button class="link" id="back">${step > 0 ? "← Zurück" : ""}</button>
-          <button class="btn" id="next" ${answers[step] ? "" : "disabled"}>${step === QUESTIONS.length - 1 ? "Abschicken" : "Weiter"}</button>
-        </div>`;
-      card.querySelectorAll(".opt").forEach(b => b.onclick = () => {
-        answers[step] = item.a[b.dataset.i];
+    const item = QUESTIONS[step], last = step === QUESTIONS.length - 1;
+    const ready = () => item.multi || answers[step].length > 0;
+    card.innerHTML = hearts() + `
+      <p class="eyebrow">Frage ${step + 1} von ${QUESTIONS.length}</p>
+      <h2>${item.q}</h2>
+      ${item.multi ? '<p class="lead">Tipp alles an, was heute nicht geht. Wenn alles okay ist, einfach weiter.</p>' : ""}
+      <div class="options">${item.a.map(([t], i) =>
+        `<button class="opt${answers[step].includes(i) ? " picked" : ""}" data-i="${i}" id="opt-${step}-${i}">${t}</button>`).join("")}</div>
+      <div class="row">
+        <button class="link" id="back">${step > 0 ? "← Zurück" : ""}</button>
+        <button class="btn" id="next" ${ready() ? "" : "disabled"}>${last ? "Abschicken" : "Weiter"}</button>
+      </div>`;
+    card.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+      const i = +b.dataset.i;
+      if (item.multi) {
+        answers[step] = answers[step].includes(i) ? answers[step].filter(x => x !== i) : [...answers[step], i];
+        b.classList.toggle("picked");
+      } else {
+        answers[step] = [i];
         card.querySelectorAll(".opt").forEach(o => o.classList.toggle("picked", o === b));
-        document.getElementById("next").disabled = false;
-      });
-      document.getElementById("back").onclick = () => { if (step > 0) { step--; render(); } };
-      document.getElementById("next").onclick = () => { step === QUESTIONS.length - 1 ? send() : (step++, render()); };
-      return;
-    }
+      }
+      document.getElementById("next").disabled = !ready();
+    });
+    document.getElementById("back").onclick = () => { if (step > 0) { step--; render(); } };
+    document.getElementById("next").onclick = () => { last ? send() : (step++, render()); };
   }
 
   async function send() {
     card.innerHTML = `<div class="big" aria-hidden="true">♥</div><h2>Wird verschickt …</h2>`;
-    const text = QUESTIONS.map((x, i) => `${x.q}\n→ ${answers[i]}`).join("\n\n");
+    const top = ranking().slice(0, 3);
+    const text = "Amelies Top 3:\n" + top.map((d, i) => `${i + 1}. ${d.name} (${d.score} Punkte)`).join("\n") +
+      "\n\nIhre Antworten:\n\n" + QUESTIONS.map((x, i) =>
+        `${x.q}\n→ ${answers[i].map(j => x.a[j][0]).join(", ") || "nichts ausgewählt"}`).join("\n\n");
     let ok = false, demo = ACCESS_KEY === "DEIN_ACCESS_KEY";
     if (!demo) {
       try {
         const r = await fetch("https://api.web3forms.com/submit", {
           method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify({ access_key: ACCESS_KEY, subject: "Amelies Antworten", from_name: "amelie.meixner.club", message: text })
+          body: JSON.stringify({ access_key: ACCESS_KEY, subject: "Amelies Top 3: " + top.map(d => d.name).join(", "),
+            from_name: "amelie.meixner.club", message: text })
         });
         ok = (await r.json()).success;
       } catch (e) { ok = false; }
     }
     if (ok || demo) {
       card.innerHTML = `<div class="big" aria-hidden="true">♥</div><h1>Danke, Amelie!</h1>
-        <p class="lead">Deine Antworten sind unterwegs zu Jan.</p>` +
-        (demo ? `<p class="note">Vorschau: Hier wird noch nichts verschickt.</p>` : "");
+        <p class="lead">Jan weiß jetzt, worauf du Hunger hast. Lass dich überraschen.</p>` +
+        (demo ? `<p class="note">Vorschau, hier wird nichts verschickt. In der Mail an Jan stünde:<br><strong>${top.map((d, i) => `${i + 1}. ${d.name}`).join(" · ")}</strong></p>` : "");
     } else {
       card.innerHTML = `<h2>Das hat nicht geklappt</h2>
         <p class="lead">Die Antworten konnten nicht verschickt werden. Prüf kurz deine Internetverbindung und versuch es nochmal.</p>
