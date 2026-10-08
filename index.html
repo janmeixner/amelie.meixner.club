@@ -102,41 +102,51 @@
     pizza: ["Pizza", "🍕"], pasta: ["Pasta", "🍝"], sushi: ["Sushi", "🍣"], burger: ["Veggie-Burger", "🍔"],
     wok: ["Wok-Nudeln", "🥡"], griech: ["Griechisch", "🫒"], mex: ["Mexikanisch", "🌮"],
     fisch: ["Fisch (z. B. Lachs)", "🐟"], bowl: ["Bowl oder Salat", "🥗"], flamm: ["Flammkuchen", "🫓"],
-    spaetzle: ["Käsespätzle", "🥘"], doener: ["Veggie-Döner", "🥙"]
+    spaetzle: ["Käsespätzle", "🥘"], doener: ["Veggie-Döner", "🥙"], broetchen: ["Belegte Brötchen vom Bäcker", "🥪"],
+    kartoffel: ["Ofenkartoffel", "🥔"], suppe: ["Suppe", "🍲"], risotto: ["Risotto", "🍚"], quiche: ["Quiche", "🥧"],
+    omelett: ["Omelett oder Rührei", "🍳"], wrap: ["Wraps", "🌯"], gnocchi: ["Gnocchi", "🥟"]
   };
 
   // Antworten: [Text, Bild, Punkte für Gerichte]. multi: mehrere Antworten möglich.
   // kind "dessert": zählt nicht für die Gerichte, mit optionalem eigenen Wunsch. kind "text": nur Freitext.
   const QUESTIONS = [
     { q: "Worauf hast du gerade am meisten Lust?", a: [
-      ["Etwas Deftiges", "🥨", { burger: 2, pizza: 1, flamm: 1, mex: 1, spaetzle: 2, doener: 2 }],
-      ["Etwas Leichtes und Frisches", "🥒", { sushi: 2, bowl: 2, griech: 1, fisch: 1 }],
-      ["Etwas Gemütliches", "🛋️", { pasta: 2, pizza: 2, flamm: 1, spaetzle: 1 }],
-      ["Etwas Exotisches", "🌴", { sushi: 1, wok: 2, mex: 2 }] ] },
+      ["Etwas Deftiges", "🥨", { burger: 2, pizza: 1, flamm: 1, mex: 1, spaetzle: 2, doener: 2, kartoffel: 2, gnocchi: 1 }],
+      ["Etwas Leichtes und Frisches", "🥒", { sushi: 2, bowl: 2, griech: 1, fisch: 1, suppe: 1, wrap: 1, broetchen: 1 }],
+      ["Etwas Gemütliches", "🛋️", { pasta: 2, pizza: 2, flamm: 1, spaetzle: 1, suppe: 2, risotto: 2, gnocchi: 2, kartoffel: 1 }],
+      ["Etwas Exotisches", "🌴", { sushi: 1, wok: 2, mex: 2, wrap: 1 }],
+      ["Etwas Schnelles", "⏱️", { broetchen: 3, wrap: 2, doener: 1, omelett: 2, pizza: 1 }] ] },
     { q: "Was soll die Hauptrolle spielen?", a: [
       ["Fisch", "🐟", { fisch: 3, sushi: 2 }],
-      ["Käse", "🧀", { pizza: 2, pasta: 1, griech: 2, flamm: 2, spaetzle: 2 }],
-      ["Gemüse", "🥦", { bowl: 2, wok: 1, griech: 1, mex: 1, doener: 1 }],
-      ["Tofu oder Falafel", "🧆", { doener: 3, bowl: 1, wok: 2, griech: 1, burger: 1 }],
+      ["Käse", "🧀", { pizza: 2, pasta: 1, griech: 2, flamm: 2, spaetzle: 2, quiche: 2, kartoffel: 1, gnocchi: 1, broetchen: 1 }],
+      ["Gemüse", "🥦", { bowl: 2, wok: 1, griech: 1, mex: 1, doener: 1, suppe: 2, quiche: 1, risotto: 1 }],
+      ["Tofu oder Falafel", "🧆", { doener: 3, bowl: 1, wok: 2, griech: 1, burger: 1, wrap: 2 }],
+      ["Ei", "🥚", { omelett: 3, quiche: 2, broetchen: 1 }],
       ["Ist mir egal", "🤷‍♀️", {}] ] },
     { q: "Welche Beilage gewinnt?", a: [
       ["Pommes", "🍟", { burger: 2, fisch: 1 }],
-      ["Reis", "🍚", { sushi: 2, wok: 1, mex: 1, fisch: 1 }],
-      ["Brot", "🥖", { doener: 2, griech: 2, flamm: 1, pizza: 1 }],
-      ["Nudeln", "🍜", { pasta: 3, wok: 2, spaetzle: 1 }] ] },
+      ["Reis", "🍚", { sushi: 2, wok: 1, mex: 1, fisch: 1, risotto: 3 }],
+      ["Brot", "🥖", { doener: 2, griech: 2, flamm: 1, pizza: 1, broetchen: 3, suppe: 2, omelett: 1 }],
+      ["Nudeln", "🍜", { pasta: 3, wok: 2, spaetzle: 1, gnocchi: 2 }],
+      ["Kartoffeln", "🥔", { kartoffel: 3, fisch: 1, gnocchi: 1 }],
+      ["Salat", "🥬", { bowl: 2, wrap: 1, quiche: 1 }] ] },
+    { q: "Warm oder kalt?", a: [
+      ["Schön warm", "🔥", { suppe: 2, risotto: 1, spaetzle: 1, kartoffel: 1, pasta: 1, gnocchi: 1 }],
+      ["Lieber kalt und frisch", "❄️", { sushi: 2, bowl: 2, broetchen: 2, wrap: 1 }],
+      ["Ist mir egal", "🤷‍♀️", {}] ] },
     { q: "Wie groß ist dein Hunger?", a: [
-      ["Nur ein kleiner Hunger", "🤏", { sushi: 1, bowl: 2, flamm: 1 }],
-      ["Normaler Hunger", "🙂", { pasta: 1, wok: 1, griech: 1, fisch: 1 }],
-      ["Riesenhunger", "🤤", { burger: 2, pizza: 2, mex: 1, spaetzle: 1, doener: 2 }] ] },
+      ["Nur ein kleiner Hunger", "🤏", { sushi: 1, bowl: 2, flamm: 1, suppe: 2, broetchen: 1, omelett: 1 }],
+      ["Normaler Hunger", "🙂", { pasta: 1, wok: 1, griech: 1, fisch: 1, risotto: 1, quiche: 1, wrap: 1, gnocchi: 1 }],
+      ["Riesenhunger", "🤤", { burger: 2, pizza: 2, mex: 1, spaetzle: 1, doener: 2, kartoffel: 1 }] ] },
     { q: "In welchem Land würdest du heute gern essen?", a: [
-      ["Deutschland", FLAGS.de, { spaetzle: 3, doener: 2, flamm: 1 }],
-      ["Italien", FLAGS.it, { pizza: 2, pasta: 2 }],
-      ["Frankreich", FLAGS.fr, { flamm: 2, fisch: 1 }],
+      ["Deutschland", FLAGS.de, { spaetzle: 3, doener: 2, flamm: 1, broetchen: 2, kartoffel: 1 }],
+      ["Italien", FLAGS.it, { pizza: 2, pasta: 2, risotto: 2, gnocchi: 2 }],
+      ["Frankreich", FLAGS.fr, { flamm: 2, fisch: 1, quiche: 3, omelett: 1 }],
       ["Griechenland", FLAGS.gr, { griech: 3 }],
       ["Japan", FLAGS.jp, { sushi: 3, fisch: 1 }],
-      ["China", FLAGS.cn, { wok: 3 }],
-      ["Mexiko", FLAGS.mx, { mex: 3 }],
-      ["USA", FLAGS.us, { burger: 3 }] ] },
+      ["China", FLAGS.cn, { wok: 3, suppe: 1 }],
+      ["Mexiko", FLAGS.mx, { mex: 3, wrap: 2 }],
+      ["USA", FLAGS.us, { burger: 3, wrap: 1 }] ] },
     { q: "Gibt es etwas, das du heute auf keinen Fall willst?", multi: true,
       hint: "Tipp alles an, was heute nicht geht. Wenn alles okay ist, einfach weiter.",
       a: Object.entries(DISHES).map(([k, [name, img]]) => [name, img, { [k]: -100 }]) },
